@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# Copyright 2009 Christoph Böhme, Mitja Kleider
+#
+# This file is part of Openstreetbugs.
+#
+# Openstreetbugs is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Openstreetbugs is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Openstreetbugs.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import MySQLdb
+import cgi
+import re
+import urllib2
+from xml.dom import minidom
+from datetime import datetime
+from pytz import timezone
+
+
+import db_config # DATABASE CONFIGURATION
+
+
+def main():
+	form = cgi.FieldStorage()
+
+	values = {}
+	values["lat"] = form.getfirst("lat", "")
+	values["lon"] = form.getfirst("lon", "")
+	values["text"] = form.getfirst("text", "")
+
+	output_format = form.getfirst("format", "")
+	output_format_js = re.match("js", output_format)
+
+	if output_format_js:
+		print "Content-type: text/javascript; charset=UTF-8\n"
+	else:
+		print "Content-type: text/html\n"
+
+	# Check that parameters have a valid format:
+	coord_exp = re.compile(r"^-?\d{1,3}(\.\d+)?$")
+	if not coord_exp.match(values["lat"]) or not (-90 <= float(values["lat"]) and float(values["lat"]) <= 90):
+		if output_format_js:
+			print "osbResponse(\"invalid or missing lat\");"
+		else:
+			print "invalid or missing lat"
+		return
+	if not coord_exp.match(values["lon"]) or not (-180 <= float(values["lon"]) and float(values["lon"]) <= 180):
+		if output_format_js:
+			print "osbResponse(\"invalid or missing lon\");"
+		else:
+			print "invalid or missing lon"
+		return
+	if values["text"].strip() == "" or not re.match(r"^[^\x00-\x1f]*$", values["text"]):
+		if output_format_js:
+			print "osbResponse(\"invalid or missing text\");"
+		else:
+			print "invalid or missing text"
+		return
+
+	values["text"] = cgi.escape(values["text"], True)
+
+	timestamp_exp = re.compile(r".*[0-9]{2}:[0-9]{2}:[0-9]{2}.*")
+	if not timestamp_exp.match(values["text"]):
+		values["text"] = values["text"][:-1] # strip last character "]"
+		values["text"] = values["text"] + ", " + datetime.strftime(datetime.now(timezone("Europe/Berlin")),"%Y-%m-%d %H:%M:%S %Z") + "]"
+
+	values["nearbyplace"] = "Unknown"
+	url = "http://ws.geonames.org/findNearbyPlaceName?lat=%s&lng=%s" % (values["lat"], values["lon"])
+	try:
+		response = urllib2.urlopen(url)
+	except urllib2.URLError, e:
+		pass
+	else:
+			dom = minidom.parseString(response.read())
+			if dom.getElementsByTagName('name'):
+				name = dom.getElementsByTagName('name')[0].firstChild.data
+				country = dom.getElementsByTagName('countryCode')[0].firstChild.data
+				values["nearbyplace"] = "%s [%s]" % (name, country)
+
+
+	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname)
+	cursor = conn.cursor()
+	cursor.execute("INSERT INTO bugs SET lon = %(lon)s, lat = %(lat)s, text = %(text)s, type = 0, last_changed = NOW(), date_created = NOW(), nearby_place = %(nearbyplace)s", values)
+	conn.commit()
+
+	if output_format_js:
+		print "osbResponse();"
+	else:
+		print "ok\n%d" %int(cursor.lastrowid)
+
+main()
