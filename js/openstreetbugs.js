@@ -15,7 +15,7 @@
  * Even though the OpenStreetBugs API originally does not intend this, you can create multiple instances of this Layer and add them to different maps (or to one single map for whatever crazy reason) without problems.
 */
 
-OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers, {
+OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	/**
 	 * The URL of the OpenStreetBugs API.
 	 * @var String
@@ -103,12 +103,16 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	*/
 	initialize : function(name, options)
 	{
-		OpenLayers.Layer.Markers.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({ opacity: 0.7, projection: new OpenLayers.Projection("EPSG:4326") }, options) ]);
+		OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({ opacity: 0.7, projection: new OpenLayers.Projection("EPSG:4326") }, options) ]);
 		putAJAXMarker.layers.push(this);
 		this.events.addEventType("markerAdded");
 
 		this.events.register("visibilitychanged", this, this.updatePopupVisibility);
 		this.events.register("visibilitychanged", this, this.loadBugs);
+
+		this.events.register("featureselected", this, this.markerClick);
+//		this.events.register("mouseover", feature, this.markerMouseOver);
+//		this.events.register("mouseout", feature, this.markerMouseOut);
 
 		var cookies = document.cookie.split(/;\s*/);
 		for(var i=0; i<cookies.length; i++)
@@ -150,7 +154,7 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	*/
 	afterAdd : function()
 	{
-		var ret = OpenLayers.Layer.Markers.prototype.afterAdd.apply(this, arguments);
+		var ret = OpenLayers.Layer.Vector.prototype.afterAdd.apply(this, arguments);
 
 		this.map.events.register("moveend", this, this.loadBugs);
 		this.loadBugs();
@@ -184,12 +188,12 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 		}
 		else
 		{
-			for(var i=0; i<this.markers.length; i++)
+			for(var i=0; i<this.features.length; i++)
 			{
-				if(this.markers[i].feature.popup && this.markers[i].feature.popup.visible())
+				if(this.features[i].popup && this.features[i].feature.visible())
 				{
-					this.markers[i].feature.popup.hide();
-					this.reopenPopups.push(this.markers[i].feature.popup);
+					this.features[i].popup.hide();
+					this.reopenPopups.push(this.features[i].popup);
 				}
 			}
 		}
@@ -215,10 +219,10 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 			document.cookie = cookie;
 		}
 
-		for(var i=0; i<this.markers.length; i++)
+		for(var i=0; i<this.features.length; i++)
 		{
-			if(!this.markers[i].feature.popup) continue;
-			var els = this.markers[i].feature.popup.contentDom.getElementsByTagName("input");
+			if(!this.features[i].popup) continue;
+			var els = this.features[i].popup.contentDom.getElementsByTagName("input");
 			for(var j=0; j<els.length; j++)
 			{
 				if(els[j].className != "osbUsername") continue;
@@ -300,12 +304,13 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 		feature.osbId = id;
 		feature.closed = closed;
 
-		var marker = feature.createMarker();
-		marker.feature = feature;
-		marker.events.register("click", feature, this.markerClick);
-		marker.events.register("mouseover", feature, this.markerMouseOver);
-		marker.events.register("mouseout", feature, this.markerMouseOut);
-		this.addMarker(marker);
+//		var marker = feature.createMarker();
+//		marker.feature = feature;
+//		marker.events.register("click", feature, this.markerClick);
+//		marker.events.register("mouseover", feature, this.markerMouseOver);
+//		marker.events.register("mouseout", feature, this.markerMouseOut);
+//		this.addMarker(marker);
+		this.addFeatures([feature]);
 
 		this.bugs[id] = feature;
 		this.events.triggerEvent("markerAdded");
@@ -555,7 +560,7 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	 * Is run on the “click” event of a marker in the context of its OpenLayers.Feature. Toggles the visibility of the popup.
 	*/
 	markerClick: function(e) {
-		var feature = this; // Context is the feature
+		var feature = e; // Context is the feature
 
 		feature.osbClicked = !feature.osbClicked;
 		if(feature.osbClicked)
@@ -653,9 +658,10 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
 		var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.apiProjection);
 		var feature = new OpenLayers.Feature(this.osbLayer, lonlat, { icon: this.icon.clone(), autoSize: true });
 		feature.popupClass = OpenLayers.Popup.FramedCloud.OpenStreetBugs;
-		var marker = feature.createMarker();
-		marker.feature = feature;
-		this.osbLayer.addMarker(marker);
+//		var marker = feature.createMarker();
+//		marker.feature = feature;
+//		this.osbLayer.addMarker(marker);
+		this.osbLayer.addFeatures([feature]);
 
 		var newContent = document.createElement("div");
 		var el1,el2,el3;
