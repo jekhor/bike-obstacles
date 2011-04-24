@@ -260,7 +260,7 @@ function init() {
         var lonlat, zoom;
         if (OpenLayers.Util.getParameters().mlon == null) {
             lonlat = new OpenLayers.LonLat(27.56813, 53.90313);
-            zoom = 7;
+            zoom = 12;
         } else {
             lonlat = new OpenLayers.LonLat(OpenLayers.Util.getParameters().mlon,OpenLayers.Util.getParameters().mlat);
             if (OpenLayers.Util.getParameters().zoom == null) {
