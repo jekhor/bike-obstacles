@@ -103,7 +103,8 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Vector, 
 	*/
 	initialize : function(name, options)
 	{
-		OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({ opacity: 0.7, projection: new OpenLayers.Projection("EPSG:4326") }, options) ]);
+		OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({ opacity: 0.7, projection: new OpenLayers.Projection("EPSG:4326"), strategies: [ new OpenLayers.Strategy.Fixed(), new OpenLayers.Strategy.Cluster() ] }, options) ]);
+
 		putAJAXMarker.layers.push(this);
 		this.events.addEventType("markerAdded");
 
@@ -190,7 +191,7 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Vector, 
 		{
 			for(var i=0; i<this.features.length; i++)
 			{
-				if(this.features[i].popup && this.features[i].feature.visible())
+				if(this.features[i].popup && this.features[i].visible())
 				{
 					this.features[i].popup.hide();
 					this.reopenPopups.push(this.features[i].popup);
@@ -299,7 +300,9 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Vector, 
 		else
 			icon = this.iconClosed;
 			
-		var feature = new OpenLayers.Feature(this, lonlat, { icon: icon.clone(), autoSize: true });
+		var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+
+		var feature = new OpenLayers.Feature.Vector(point);
 		feature.popupClass = OpenLayers.Popup.FramedCloud.OpenStreetBugs;
 		feature.osbId = id;
 		feature.closed = closed;
