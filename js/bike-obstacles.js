@@ -281,7 +281,7 @@ function init() {
     window.onresize = handleResize;
 
     var sorry = document.createElement("div");
-    sorry.innerHTML = OpenLayers.i18n("New bumps can be added on zoom level 17 or greater");
+    sorry.innerHTML = OpenLayers.i18n("New obstacles can be added on zoom level 17 or greater");
     sorry.id = "sorry";
     document.body.insertBefore(sorry, $("content"));
 }
@@ -301,7 +301,7 @@ OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "Permalink": "Постоянная ссылка",
     "Zoom": "Приблизить",
     "Unresolved Error": "Существующая проблема",
-    "Comment/Close": "Изменить",
+    "Change": "Изменить",
     "Nickname": "Представьтесь",
     "Kerb" : "Бордюр",
     "kerb" : "бордюр",
@@ -314,7 +314,7 @@ OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "Mark as fixed" : "Пометить как исправленное",
     "Add comment" : "Добавить комментарий",
     "Cancel" : "Отмена",
-    "New bumps can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
+    "New obstacles can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
 });
 
 OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
@@ -331,7 +331,7 @@ OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
     "Permalink": "Сталая спасылка",
     "Zoom": "Наблізіць",
     "Unresolved Error": "Існуючая праблема",
-    "Comment/Close": "Змяніць/закрыць",
+    "Change": "Змяніць/закрыць",
     "Nickname": "Мянушка",
     "Kerb" : "Бардзюр",
     "kerb" : "бардзюр",
@@ -344,6 +344,6 @@ OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
     "Mark as fixed" : "Пазначыць як выпраўленае",
     "Add comment" : "Дадаць каментар",
     "Cancel" : "Скасаваць",
-    "New bumps can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
+    "New obstacles can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
 });
 

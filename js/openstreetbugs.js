@@ -409,7 +409,7 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 			el2 = document.createElement("input");
 			el2.setAttribute("type", "button");
 			el2.onclick = function(){ displayChange(); };
-			el2.value = OpenLayers.i18n("Comment/Close");
+			el2.value = OpenLayers.i18n("Change");
 			el1.appendChild(el2);
 			containerDescription.appendChild(el1);
 
