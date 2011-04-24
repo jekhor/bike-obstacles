@@ -19,8 +19,17 @@ function osbug_makeform() {
         var newContent = document.createElement("div");
         var el1,el2,el3;
         var control = osb;
+        var types = {
+                "kerb": "Kerb",
+                "parked cars": "Parked cars",
+                "pedestrians": "Pedestrians",
+                "stairs": "Stairs",
+                "other": "Other"
+        };
 
-        var el_form = newContent;
+        var el_form = document.createElement("form");
+
+        newContent.appendChild(el_form);
 
         el1 = document.createElement("dl");
 
@@ -28,38 +37,21 @@ function osbug_makeform() {
         el2.appendChild(document.createTextNode(OpenLayers.i18n("Type:")));
         el1.appendChild(el2);
         el2 = document.createElement("dd");
-        var calmType1 = document.createElement("input");
-        calmType1.id = "speedcam";
-        calmType1.value = "speedcam";
-        calmType1.type = "radio";
-        calmType1.name = "type";
-        el2.appendChild(calmType1);
-        var label = document.createElement("label");
-        //label.for = "speedcam";
-        label.appendChild(document.createTextNode(OpenLayers.i18n("Speedcam")));
-        el2.appendChild(label);
-        el2.appendChild(document.createElement("br"));
-        var calmType2 = document.createElement("input");
-        calmType2.id = "bump";
-        calmType2.value = "bump";
-        calmType2.type = "radio";
-        calmType2.name = "type";
-        el2.appendChild(calmType2);
-        label = document.createElement("label");
-        //label.for = "bump";
-        label.appendChild(document.createTextNode(OpenLayers.i18n("Bump")));
-        el2.appendChild(label);
-        el2.appendChild(document.createElement("br"));
-        var calmType3 = document.createElement("input");
-        calmType3.id = "bug";
-        calmType3.value = "bug";
-        calmType3.type = "radio";
-        calmType3.name = "type";
-        el2.appendChild(calmType3);
-        label = document.createElement("label");
-        //label.for = "bump";
-        label.appendChild(document.createTextNode(OpenLayers.i18n("Something's wrong")));
-        el2.appendChild(label);
+
+        for (var i in types) {
+                var obstacleType1 = document.createElement("input");
+                obstacleType1.id = i;
+                obstacleType1.value = i;
+                obstacleType1.type = "radio";
+                obstacleType1.name = "type";
+                el2.appendChild(obstacleType1);
+                var label = document.createElement("label");
+                label.htmlFor = i;
+                label.appendChild(document.createTextNode(OpenLayers.i18n(types[i])));
+                el2.appendChild(label);
+                el2.appendChild(document.createElement("br"));
+        }
+
         el1.appendChild(el2);
 
         el2 = document.createElement("dt");
@@ -70,10 +62,10 @@ function osbug_makeform() {
         if (osb.osbLayer.usernameshort != null) {
             if (osb.osbLayer.usernameshort == "") {
                 osb.osbLayer.usernameshort = "anonymous";
-            }            
+            }
         } else {
             if (osb.osbLayer.username != null) {
-                osb.osbLayer.usernameshort = osb.osbLayer.username.replace("@latlon.org/tc","");
+                osb.osbLayer.usernameshort = osb.osbLayer.username;
             }
         }
         if (osb.osbLayer.usernameshort == "NoName") {
@@ -102,24 +94,28 @@ function osbug_makeform() {
         el_form.appendChild(el1);
 
         popup.setContentHTML(newContent.innerHTML);
-        $("bump").checked = true;
+        $("kerb").checked = true;
         $("osbuser").value = osb.osbLayer.usernameshort;
         $("saybtn").onclick = function() {
-            var l = popup.lonlat;
-            var t = "(error) ";
-            if ($("speedcam").checked) t = "(speedcam) ";
-            if ($("bump").checked) t = "(bump) ";
-            l.transform(map.projection,map.displayProjection)
-            /* if ($("osbuser").value == "NoName") {
-                alert(OpenLayers.i18n("Please fill in your name"));
+                var l = popup.lonlat;
+                var t = "";
+                l.transform(map.projection,map.displayProjection)
+                        /* if ($("osbuser").value == "NoName") {
+                           alert(OpenLayers.i18n("Please fill in your name"));
+                           return false;
+                           } */
+
+                var tmp = "";
+                for (var i in types)
+                        if ($(i).checked)
+                                tmp = i;
+
+                osb.osbLayer.setUserName($("osbuser").value);
+                osb.osbLayer.usernameshort = $("osbuser").value;
+                osb.osbLayer.createBug(l, t + $("osbtext").value, tmp);
+                popup.setContentHTML(OpenLayers.i18n("Thanks for your response, it will be taken into account soon."));
+                popup.updateSize();
                 return false;
-            } */
-            osb.osbLayer.setUserName($("osbuser").value + "@latlon.org/tc");
-            osb.osbLayer.usernameshort = $("osbuser").value;
-            osb.osbLayer.createBug(l, t + $("osbtext").value);
-            popup.setContentHTML(OpenLayers.i18n("Thanks for your response, it will be taken into account soon."));
-            popup.updateSize();
-            return false;
         };
 
         popup.updateSize();
@@ -157,19 +153,17 @@ function onFeatureUnselect(evt) {
     return;
 }
 
-function putAJAXMarker(id, lon, lat, text, closed)
+function putAJAXMarker(id, lon, lat, text, closed, subtype)
 {
     var comments = text.split(/<hr \/>/);
     for(var i=0; i<comments.length; i++)
         comments[i] = comments[i].replace(/&quot;/g, "\"").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-    if (closed) return;
-    if ((text.indexOf("LatLon") == -1) &&
-        (text.indexOf("latlon") == -1)) return;
-    
+
     putAJAXMarker.bugs[id] = [
         new OpenLayers.LonLat(lon, lat),
         comments,
-        closed
+        closed,
+        subtype
     ];
     for(var i=0; i<putAJAXMarker.layers.length; i++)
         putAJAXMarker.layers[i].createMarker(id);
@@ -194,9 +188,9 @@ function init() {
         var query = OpenLayers.Util.getParameterString(this.createParams());
         if (query != "") query = "?" + query;
 
-	href += query;
-	if (this.hash) 
-        	href += this.hash;
+        href += query;
+        if (this.hash)
+                href += this.hash;
 
         this.element.href = href;
     }
@@ -220,26 +214,40 @@ function init() {
           new OpenLayers.Control.ScaleLine(), 
           new OpenLayers.Control.MousePosition(),
           new OpenLayers.Control.LayerSwitcher(),
-          new OpenLayers.Control.Permalink(null, null, {"hash": document.location.hash}),
-          new OpenLayers.Control.Permalink("editlink", "http://openstreetmap.org/edit", {"hash": document.location.hash}),
-          new OpenLayers.Control.Permalink("mini", "http://latlon.org/", {"hash": document.location.hash}),
-          new OpenLayers.Control.Permalink("maxi", "http://latlon.org/maxi", {"hash": document.location.hash}),
-          new OpenLayers.Control.Permalink("transport", "http://latlon.org/pt", {"hash": document.location.hash}),
-          new OpenLayers.Control.Permalink("sketchlink", "http://latlon.org/sketch", {"hash": document.location.hash})
+          new OpenLayers.Control.Permalink(null, null, {"hash": document.location.hash})
+//          new OpenLayers.Control.Permalink("editlink", "http://openstreetmap.org/edit", {"hash": document.location.hash}),
+//          new OpenLayers.Control.Permalink("mini", "http://latlon.org/", {"hash": document.location.hash}),
+//          new OpenLayers.Control.Permalink("maxi", "http://latlon.org/maxi", {"hash": document.location.hash}),
+//          new OpenLayers.Control.Permalink("transport", "http://latlon.org/pt", {"hash": document.location.hash}),
+//          new OpenLayers.Control.Permalink("sketchlink", "http://latlon.org/sketch", {"hash": document.location.hash}),
         ]
     };
 
     map = new OpenLayers.Map('map', options);
-    mapnik = new OpenLayers.Layer.OSM();
+    mapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
     var date = new Date();
-    cops = new OpenLayers.Layer.OSM("Traffic calming", "http://91.208.39.18/cops/${z}/${x}/${y}.png?" + date.getTime(), {numZoomLevels: 19,  isBaseLayer: false,  type: 'png', splayOutsideMaxExtent: true, visibility: true});
+//    cops = new OpenLayers.Layer.OSM("Traffic calming", "http://91.208.39.18/cops/${z}/${x}/${y}.png?" + date.getTime(), {numZoomLevels: 19,  isBaseLayer: false,  type: 'png', splayOutsideMaxExtent: true, visibility: true});
 
     //new OpenLayers.Layer.Markers("Cafés");
     markers = new OpenLayers.Layer.Markers("Markers");
 
-    var osbLayer = new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { permalinkURL: "http://latlon.org/tc/", theme: "/css/openstreetbugs.css"});
+    var iconClosed = new OpenLayers.Icon("http://osb/images/closed_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
+    var iconOpen = new OpenLayers.Icon("http://osb/images/open_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
+    var iconKerb = new OpenLayers.Icon("http://osb/images/icon-border.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
+    var iconCars = new OpenLayers.Icon("http://osb/images/carparking32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
+    var iconPedestrians = new OpenLayers.Icon("http://osb/images/old_folks32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
+    var iconStairs = new OpenLayers.Icon("http://osb/images/stairs32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
+
+    var subtypeIcons = {
+            "kerb": iconKerb,
+            "parked cars": iconCars,
+            "pedestrians": iconPedestrians,
+            "stairs": iconStairs
+    };
+
+    var osbLayer = new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { serverURL: "http://osb/api/0.1/", permalinkURL: "http://osb/", theme: "/css/openstreetbugs.css", iconOpen: iconOpen, iconClosed: iconClosed, subtypeIcons: subtypeIcons});
     osb = new OpenLayers.Control.OpenStreetBugs(osbLayer);
-    map.addLayers([mapnik, cops, markers, osbLayer]);
+    map.addLayers([mapnik, markers, osbLayer]);
     //map.addLayers([osbLayer]);
     //cafes.preFeatureInsert = style_osm_feature; 
 
@@ -271,9 +279,9 @@ function init() {
 
     window.onload = handleResize;
     window.onresize = handleResize;
-    
+
     var sorry = document.createElement("div");
-    sorry.innerHTML = OpenLayers.i18n("New bumps can be added on zoom level 17 or greater<br/>More info can be found <a href='http://blog.latlon.org/2010/11/16/otmetki-o-lezhachikh-policejjskikh-v-osm/'>here</a>");
+    sorry.innerHTML = OpenLayers.i18n("New bumps can be added on zoom level 17 or greater");
     sorry.id = "sorry";
     document.body.insertBefore(sorry, $("content"));
 }
@@ -282,22 +290,60 @@ function init() {
 OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "Say": "Сообщить",
     "Your message:": "Комментарий",
-    "Bump": "Спящий полицейский",
-    "Speedcam": "Камера",
     "Type:": "Вид:",
     "Your name:": "Представьтесь:",
     "NoName": "Кто-то",
     "Please fill in your name": "Представьтесь, пожалуйста",
     "Comment is required": "Впишите, пожалуйста, комментарий",
-    "Something's wrong": "Ошибка на карте",
+    "Something's wrong": "Другое",
     "Description": "Описание",
     "Comment": "Комментарий",
     "Permalink": "Постоянная ссылка",
     "Zoom": "Приблизить",
-    "Unresolved Error": "Неисправленная неточность",
+    "Unresolved Error": "Существующая проблема",
     "Comment/Close": "Изменить",
-    "Traffic Calming": "",
     "Nickname": "Представьтесь",
-    "New bumps can be added on zoom level 17 or greater<br/>More info can be found <a href='http://blog.latlon.org/2010/11/16/otmetki-o-lezhachikh-policejjskikh-v-osm/'>here</a>": "Добавлять сведения можно только на максимальном уровне детализации<br/>Подробности <a href='http://blog.latlon.org/2010/11/16/otmetki-o-lezhachikh-policejjskikh-v-osm/'>здесь</a>"
+    "Kerb" : "Бордюр",
+    "kerb" : "бордюр",
+    "Parked cars" : "припаркованные машины",
+    "parked cars" : "припаркованные машины",
+    "Pedestrians" : "Пешеходы",
+    "pedestrians" : "пешеходы",
+    "Stairs" : "Ступеньки",
+    "stairs" : "ступеньки",
+    "Mark as fixed" : "Пометить как исправленное",
+    "Add comment" : "Добавить комментарий",
+    "Cancel" : "Отмена",
+    "New bumps can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
+});
+
+OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
+    "Say": "Паведаміць",
+    "Your message:": "Каментар",
+    "Type:": "Тып:",
+    "Your name:": "Вашае імя:",
+    "NoName": "Нехта",
+    "Please fill in your name": "Калі ласка, пазначце вашае імя",
+    "Comment is required": "Каментар абавязковы, напішыце яго, калі ласка",
+    "Something's wrong": "Іншае",
+    "Description": "Апісанне",
+    "Comment": "Каментар",
+    "Permalink": "Сталая спасылка",
+    "Zoom": "Наблізіць",
+    "Unresolved Error": "Існуючая праблема",
+    "Comment/Close": "Змяніць/закрыць",
+    "Nickname": "Мянушка",
+    "Kerb" : "Бардзюр",
+    "kerb" : "бардзюр",
+    "Parked cars" : "Прыпаркаваныя машыны",
+    "parked cars" : "прыпаркаваныя машыны",
+    "Pedestrians" : "Пешаходы",
+    "pedestrians" : "пешаходы",
+    "Stairs" : "Прыступкі",
+    "stairs" : "прыступкі",
+    "Mark as fixed" : "Пазначыць як выпраўленае",
+    "Add comment" : "Дадаць каментар",
+    "Cancel" : "Скасаваць",
+    "New bumps can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
 });
 

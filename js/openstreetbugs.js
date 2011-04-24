@@ -11,7 +11,7 @@
 */
 
 /**
- * A fully functional OpenStreetBugs layer. See http://osb/.
+ * A fully functional OpenStreetBugs layer. See http://openstreetbugs.schokokeks.org/.
  * Even though the OpenStreetBugs API originally does not intend this, you can create multiple instances of this Layer and add them to different maps (or to one single map for whatever crazy reason) without problems.
 */
 
@@ -20,7 +20,7 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	 * The URL of the OpenStreetBugs API.
 	 * @var String
 	*/
-	serverURL : "http://osb/api/0.1/",
+	serverURL : "http://openstreetbugs.schokokeks.org/api/0.1/",
 
 	/**
 	 * Associative array (index: bug ID) that is filled with the bugs loaded in this layer
@@ -38,13 +38,18 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	 * The icon to be used for an open bug
 	 * @var OpenLayers.Icon
 	*/
-	iconOpen : new OpenLayers.Icon("http://osb/client/open_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
+	iconOpen : new OpenLayers.Icon("http://openstreetbugs.schokokeks.org/client/open_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
 
 	/**
 	 * The icon to be used for a closed bug
 	 * @var OpenLayers.Icon
 	*/
-	iconClosed : new OpenLayers.Icon("http://osb/client/closed_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
+	iconClosed : new OpenLayers.Icon("http://openstreetbugs.schokokeks.org/client/closed_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
+
+	/**
+	 * Icons (hash) for subtypes
+	 */
+	subtypeIcons : {},
 
 	/**
 	 * The projection of the coordinates sent by the OpenStreetBugs API.
@@ -284,7 +289,13 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 		var lonlat = putAJAXMarker.bugs[id][0].clone().transform(this.apiProjection, this.map.getProjectionObject());
 		var comments = putAJAXMarker.bugs[id][1];
 		var closed = putAJAXMarker.bugs[id][2];
-		var feature = new OpenLayers.Feature(this, lonlat, { icon: (closed ? this.iconClosed : this.iconOpen).clone(), autoSize: true });
+
+		if (!closed)
+			icon = this.subtypeIcons[putAJAXMarker.bugs[id][3]] == null ? this.iconOpen : this.subtypeIcons[putAJAXMarker.bugs[id][3]];
+		else
+			icon = this.iconClosed;
+			
+		var feature = new OpenLayers.Feature(this, lonlat, { icon: icon.clone(), autoSize: true });
 		feature.popupClass = OpenLayers.Popup.FramedCloud.OpenStreetBugs;
 		feature.osbId = id;
 		feature.closed = closed;
@@ -312,6 +323,9 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 		var el1,el2,el3;
 		var layer = this;
 
+		var icon = this.subtypeIcons[putAJAXMarker.bugs[id][3]] == null ? this.iconOpen : this.subtypeIcons[putAJAXMarker.bugs[id][3]];
+		var subtypeText = OpenLayers.i18n(putAJAXMarker.bugs[id][3]); 
+	
 		var newContent = document.createElement("div");
 
 		el1 = document.createElement("h3");
@@ -335,6 +349,18 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 			el1.appendChild(document.createTextNode("]"));
 		}
 		newContent.appendChild(el1);
+
+		el1 = document.createElement("p");
+		el2 = document.createElement("img");
+		el2.src = icon.url;
+		if (putAJAXMarker.bugs[id][3] != null)
+			el2.alt = OpenLayers.i18n(subtypeText);
+
+		el1.appendChild(el2);
+		el1.appendChild(document.createElement("br"));
+		el1.appendChild(document.createTextNode(subtypeText));
+		newContent.appendChild(el1);
+
 
 		var containerDescription = document.createElement("div");
 		newContent.appendChild(containerDescription);
@@ -447,11 +473,12 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	 * @param OpenLayers.LonLat lonlat The coordinates in the API projection.
 	 * @param String description
 	*/
-	createBug: function(lonlat, description) {
+	createBug: function(lonlat, description, type) {
 		this.apiRequest("addPOIexec"
 			+ "?lat="+encodeURIComponent(lonlat.lat)
 			+ "&lon="+encodeURIComponent(lonlat.lon)
 			+ "&text="+encodeURIComponent(description + " [" + this.getUserName() + "]")
+			+ "&subtype="+encodeURIComponent(type)
 			+ "&format=js"
 		);
 	},
@@ -574,7 +601,7 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
 	 * The icon to be used for the temporary markers that the “create bug” popup belongs to.
 	 * @var OpenLayers.Icon
 	*/
-	icon : new OpenLayers.Icon("http://osb/client/icon_error_add.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
+	icon : new OpenLayers.Icon("http://openstreetbugs.schokokeks.org/client/icon_error_add.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
 
 	/**
 	 * An instance of the OpenStreetBugs layer that this control shall be connected to. Is set in the constructor.
@@ -637,7 +664,7 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
 		newContent.appendChild(el1);
 
 		var el_form = document.createElement("form");
-		el_form.onsubmit = function() { control.osbLayer.createBug(lonlatApi, inputDescription.value); marker.feature = null; feature.destroy(); return false; };
+		el_form.onsubmit = function() { control.osbLayer.createBug(lonlatApi, inputDescription.value, ""); marker.feature = null; feature.destroy(); return false; };
 
 		el1 = document.createElement("dl");
 		el2 = document.createElement("dt");
@@ -770,7 +797,7 @@ OpenLayers.i18n = OpenLayers.Lang.translate = function(key, context) {
  * on the other map as well.
 */
 
-function putAJAXMarker(id, lon, lat, text, closed)
+function putAJAXMarker(id, lon, lat, text, closed, subtype)
 {
 	var comments = text.split(/<hr \/>/);
 	for(var i=0; i<comments.length; i++)
@@ -778,7 +805,8 @@ function putAJAXMarker(id, lon, lat, text, closed)
 	putAJAXMarker.bugs[id] = [
 		new OpenLayers.LonLat(lon, lat),
 		comments,
-		closed
+		closed,
+		subtype
 	];
 	for(var i=0; i<putAJAXMarker.layers.length; i++)
 		putAJAXMarker.layers[i].createMarker(id);

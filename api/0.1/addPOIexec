@@ -39,6 +39,7 @@ def main():
 	values["lat"] = form.getfirst("lat", "")
 	values["lon"] = form.getfirst("lon", "")
 	values["text"] = form.getfirst("text", "")
+	values["subtype"] = form.getfirst("subtype", "")
 
 	output_format = form.getfirst("format", "")
 	output_format_js = re.match("js", output_format)
@@ -92,7 +93,7 @@ def main():
 
 	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname)
 	cursor = conn.cursor()
-	cursor.execute("INSERT INTO bugs SET lon = %(lon)s, lat = %(lat)s, text = %(text)s, type = 0, last_changed = NOW(), date_created = NOW(), nearby_place = %(nearbyplace)s", values)
+	cursor.execute("INSERT INTO bugs SET lon = %(lon)s, lat = %(lat)s, text = %(text)s, type = 0, last_changed = NOW(), date_created = NOW(), nearby_place = %(nearbyplace)s, subtype=%(subtype)s", values)
 	conn.commit()
 
 	if output_format_js:
