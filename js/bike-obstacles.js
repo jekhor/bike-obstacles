@@ -224,7 +224,8 @@ function init() {
     };
 
     map = new OpenLayers.Map('map', options);
-    mapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
+    belmapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
+    var mapnik = new OpenLayers.Layer.OSM();
     var date = new Date();
 //    cops = new OpenLayers.Layer.OSM("Traffic calming", "http://91.208.39.18/cops/${z}/${x}/${y}.png?" + date.getTime(), {numZoomLevels: 19,  isBaseLayer: false,  type: 'png', splayOutsideMaxExtent: true, visibility: true});
 
@@ -247,7 +248,7 @@ function init() {
 
     var osbLayer = new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { serverURL: "http://osb/api/0.1/", permalinkURL: "http://osb/", theme: "/css/openstreetbugs.css", iconOpen: iconOpen, iconClosed: iconClosed, subtypeIcons: subtypeIcons});
     osb = new OpenLayers.Control.OpenStreetBugs(osbLayer);
-    map.addLayers([mapnik, markers, osbLayer]);
+    map.addLayers([belmapnik, mapnik, markers, osbLayer]);
     //map.addLayers([osbLayer]);
     //cafes.preFeatureInsert = style_osm_feature; 
 
