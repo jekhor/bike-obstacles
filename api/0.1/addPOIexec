@@ -91,7 +91,7 @@ def main():
 				values["nearbyplace"] = "%s [%s]" % (name, country)
 
 
-	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname)
+	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname, charset="utf8")
 	cursor = conn.cursor()
 	cursor.execute("INSERT INTO bugs SET lon = %(lon)s, lat = %(lat)s, text = %(text)s, type = 0, last_changed = NOW(), date_created = NOW(), nearby_place = %(nearbyplace)s, subtype=%(subtype)s", values)
 	conn.commit()

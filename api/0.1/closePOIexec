@@ -50,7 +50,7 @@ def main():
 			print "invalid or missing id"
 		return
 
-	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname)
+	conn = MySQLdb.connect(db_config.host, user=db_config.user, passwd=db_config.password, db=db_config.dbname, charset="utf8")
 	curs = conn.cursor()
 	curs.execute("UPDATE bugs SET type = 1, last_changed = NOW() WHERE id = %(id)s and type = 0", values)
 	conn.commit()
