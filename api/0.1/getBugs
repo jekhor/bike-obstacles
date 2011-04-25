@@ -50,6 +50,6 @@ def main():
 
 	curs.execute("SELECT * FROM bugs WHERE %(b)s <= lat and lat <= %(t)s and %(l)s <= lon and lon <= %(r)s AND (type = 0 OR TIMESTAMPDIFF(DAY, `last_changed`, NOW()) <= 7) ORDER BY last_changed DESC LIMIT 1000", values)
 	for c in curs:
-		print "putAJAXMarker(%i, %f, %f, '%s', %i, '%s');" % (c[0], c[1], c[2], c[3].replace("'", "\\'"), c[4], c[8].replace("'", "\\'"))
+		print "putAJAXMarker(%i, %f, %f, '%s', %i, '%s');" % (c[0], c[1], c[2], c[3].encode("UTF-8").replace("'", "\\'"), c[4], c[8].encode("UTF-8").replace("'", "\\'"))
 
 main()
