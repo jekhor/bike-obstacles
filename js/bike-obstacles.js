@@ -24,6 +24,8 @@ function osbug_makeform() {
                 "parked cars": "Parked cars",
                 "pedestrians": "Pedestrians",
                 "stairs": "Stairs",
+                "dogs": "Dogs",
+                "rough road": "Rough road",
                 "other": "Other"
         };
 
@@ -239,12 +241,16 @@ function init() {
     var iconCars = new OpenLayers.Icon("http://osb/images/carparking32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
     var iconPedestrians = new OpenLayers.Icon("http://osb/images/old_folks32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
     var iconStairs = new OpenLayers.Icon("http://osb/images/stairs32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
+    var iconDogs = new OpenLayers.Icon("http://osb/images/dog32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
+    var iconRoughRoad = new OpenLayers.Icon("http://osb/images/rough-road32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -16));
 
     var subtypeIcons = {
             "kerb": iconKerb,
             "parked cars": iconCars,
             "pedestrians": iconPedestrians,
-            "stairs": iconStairs
+            "stairs": iconStairs,
+            "dogs": iconDogs,
+            "rough road": iconRoughRoad
     };
 
     var osbLayer = new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { serverURL: "http://osb/api/0.1/", permalinkURL: "http://osb/", theme: "/css/openstreetbugs.css", iconOpen: iconOpen, iconClosed: iconClosed, subtypeIcons: subtypeIcons});
@@ -315,6 +321,10 @@ OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "pedestrians" : "пешеходы",
     "Stairs" : "Ступеньки",
     "stairs" : "ступеньки",
+    "Dogs" : "Собаки",
+    "dogs" : "собаки",
+    "rough road" : "дефекты покрытия",
+    "Rough road" : "Дефекты покрытия",
     "Mark as fixed" : "Пометить как исправленное",
     "Add comment" : "Добавить комментарий",
     "Cancel" : "Отмена",
@@ -346,6 +356,10 @@ OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
     "pedestrians" : "пешаходы",
     "Stairs" : "Прыступкі",
     "stairs" : "прыступкі",
+    "Dogs" : "Сабакі",
+    "dogs" : "сабакі",
+    "rough road" : "дэфекты пакрыцця",
+    "Rough road" : "Дэфекты пакрыцця",
     "Mark as fixed" : "Пазначыць як выпраўленае",
     "Add comment" : "Дадаць каментар",
     "Cancel" : "Скасаваць",

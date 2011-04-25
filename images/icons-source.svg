@@ -120,6 +120,71 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 182.57249 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3259" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2405" />
+    <inkscape:perspective
+       id="perspective2403"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2390" />
+    <inkscape:perspective
+       id="perspective10"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter4377"
+       inkscape:label="Roughen inside"
+       inkscape:menu="Distort"
+       inkscape:menu-tooltip="Roughen all inside shapes"
+       color-interpolation-filters="sRGB">
+      <feTurbulence
+         id="feTurbulence4379"
+         numOctaves="5"
+         seed="0"
+         type="fractalNoise"
+         baseFrequency="0.08" />
+      <feGaussianBlur
+         id="feGaussianBlur4381"
+         stdDeviation="0.5"
+         result="result91" />
+      <feDisplacementMap
+         id="feDisplacementMap4383"
+         in2="result91"
+         scale="20"
+         yChannelSelector="G"
+         xChannelSelector="R"
+         in="SourceGraphic"
+         result="result1" />
+      <feComposite
+         id="feComposite4385"
+         in2="SourceGraphic"
+         in="result1"
+         operator="atop" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -131,9 +196,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.24748737"
-     inkscape:cx="-1381.9027"
-     inkscape:cy="-154.31045"
+     inkscape:zoom="0.25"
+     inkscape:cx="-1873.5252"
+     inkscape:cy="-1034.2837"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -332,6 +397,74 @@
            d="m -685,1597.3622 90,0"
            style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       </g>
+    </g>
+    <g
+       id="g4320"
+       inkscape:export-filename="/var/www/osb/images/dog32.png"
+       inkscape:export-xdpi="6.311008"
+       inkscape:export-ydpi="6.311008">
+      <g
+         transform="translate(-925,5)"
+         inkscape:export-ydpi="4.3826447"
+         inkscape:export-xdpi="4.3826447"
+         inkscape:export-filename="/var/www/osb/images/stairs.png"
+         id="g8421-5">
+        <path
+           inkscape:connector-curvature="0"
+           d="m -869.79385,1713.5195 c -19.08128,-1.5622 -32.07382,-23.7384 -23.71302,-41.0839 34.58154,-60.0383 192.41747,-331.192 230.33577,-397.697 10.89353,-15.7438 36.59494,-15.9076 47.43618,0.01 34.704,59.9677 191.86985,330.8881 230.50575,396.9788 8.18776,17.3059 -4.52111,39.6459 -23.72316,41.078 -69.28554,0.071 -384.28731,0.3039 -460.84152,0.7183 z"
+           id="path590-0-9"
+           sodipodi:nodetypes="ccccccc"
+           style="font-size:12px;fill:#ff0000;fill-rule:evenodd;stroke-width:3pt" />
+        <path
+           inkscape:connector-curvature="0"
+           d="m -841.53373,1668.8005 402.21934,-1.1653 -200.87825,-346.9004 -201.34109,348.0657 z"
+           id="path605-2-5"
+           sodipodi:nodetypes="cccc"
+           style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke-width:3pt" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-rule:evenodd;stroke:none"
+         d="m -1660.2262,1555.9256 c 27.7357,-31.1759 52.5355,-71.1597 84.0776,-90.9165 2.4848,-19.5594 12.0489,-32.8261 24.1372,-43.8491 l 3.2182,43.8491 c 3.9858,-10.6583 11.4363,-18.8418 22.9303,-24.1371 l -1.2068,39.424 c 8.5278,6.3995 22.4217,16.4303 28.0211,29.8319 5.7163,13.6814 23.9337,16.5342 35.9422,26.0858 -34.5634,52.3871 -57.9294,17.435 -86.8936,26.1485 -1.0728,28.5623 -3.8817,46.7074 -3.2183,85.6868 -24.8608,2.6575 -57.55,-18.8508 -107.0079,-92.1234 z"
+         id="path3242"
+         sodipodi:nodetypes="ccccccscccc" />
+    </g>
+    <g
+       id="g4389"
+       inkscape:export-filename="/var/www/osb/images/rough-road32.png"
+       inkscape:export-xdpi="6.311008"
+       inkscape:export-ydpi="6.311008">
+      <g
+         transform="translate(-915,574.99998)"
+         inkscape:export-ydpi="4.3826447"
+         inkscape:export-xdpi="4.3826447"
+         inkscape:export-filename="/var/www/osb/images/stairs.png"
+         id="g8421-5-9">
+        <path
+           inkscape:connector-curvature="0"
+           d="m -869.79385,1713.5195 c -19.08128,-1.5622 -32.07382,-23.7384 -23.71302,-41.0839 34.58154,-60.0383 192.41747,-331.192 230.33577,-397.697 10.89353,-15.7438 36.59494,-15.9076 47.43618,0.01 34.704,59.9677 191.86985,330.8881 230.50575,396.9788 8.18776,17.3059 -4.52111,39.6459 -23.72316,41.078 -69.28554,0.071 -384.28731,0.3039 -460.84152,0.7183 z"
+           id="path590-0-9-8"
+           sodipodi:nodetypes="ccccccc"
+           style="font-size:12px;fill:#ff0000;fill-rule:evenodd;stroke-width:3pt" />
+        <path
+           inkscape:connector-curvature="0"
+           d="m -841.53373,1668.8005 402.21934,-1.1653 -200.87825,-346.9004 -201.34109,348.0657 z"
+           id="path605-2-5-0"
+           sodipodi:nodetypes="cccc"
+           style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke-width:3pt" />
+      </g>
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4362"
+         d="m -1735,2232.3622 360,0 -30,-55 -300,0 z"
+         style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path4387"
+         d="m -1670,2177.3622 c 30,10 15,-40 55,-40 40,0 25,45 60,40 35,5 15,-40 60,-40 40,0 20,45 60,40"
+         style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
   </g>
 </svg>
