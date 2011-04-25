@@ -325,11 +325,12 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 
 		var icon = this.subtypeIcons[putAJAXMarker.bugs[id][3]] == null ? this.iconOpen : this.subtypeIcons[putAJAXMarker.bugs[id][3]];
 		var subtypeText = OpenLayers.i18n(putAJAXMarker.bugs[id][3]); 
-	
+		var closed = putAJAXMarker.bugs[id][2];
+
 		var newContent = document.createElement("div");
 
 		el1 = document.createElement("h3");
-		el1.appendChild(document.createTextNode(closed ? OpenLayers.i18n("Fixed Error") : OpenLayers.i18n("Unresolved Error")));
+		el1.appendChild(document.createTextNode(closed ? OpenLayers.i18n("Fixed Problem") : OpenLayers.i18n("Unresolved Problem")));
 
 		el1.appendChild(document.createTextNode(" ["));
 		el2 = document.createElement("a");
