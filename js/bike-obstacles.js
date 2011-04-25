@@ -130,12 +130,13 @@ function onPopupClose(evt) {
 }
 
 function onFeatureSelect(evt) {
+    var l = map.getLonLatFromViewPortPx(evt.xy);
+
     onPopupClose();
     if (map.zoom < 17) {
-        map.zoomTo(17);
+        map.setCenter(l, 17);
         return;
     }
-    var l = map.getLonLatFromViewPortPx(evt.xy);
 
     var name;
 
