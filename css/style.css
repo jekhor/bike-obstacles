@@ -67,6 +67,7 @@ body {
     width: 0;
     font-family: sans-serif;
     position: relative;
+    padding: 0.5em;
 }
 
 #sidebar_close {
