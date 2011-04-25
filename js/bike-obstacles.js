@@ -276,6 +276,7 @@ function init() {
         map.panTo(lonlat);
     }
 
+    openSidebar({width: "20%"});
     handleResize();
 
     window.onload = handleResize;
