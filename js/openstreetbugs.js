@@ -457,6 +457,16 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 			el_form.appendChild(el1);
 			containerChange.appendChild(el_form);
 
+			el2 = document.createElement("li");
+			el3 = document.createElement("input");
+			el3.setAttribute("type", "button");
+			el3.onclick = function(){ this.form.onsubmit(); layer.deleteBug(id); layer.bugs[id].popup.hide(); layer.bugs[id].destroy(); return false; };
+			el3.value = OpenLayers.i18n("Delete");
+			el2.appendChild(el3);
+			el1.appendChild(el2);
+			el_form.appendChild(el1);
+			containerChange.appendChild(el_form);
+
 			el1 = document.createElement("div");
 			el2 = document.createElement("input");
 			el2.setAttribute("type", "button");
@@ -503,6 +513,17 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 	*/
 	closeBug: function(id) {
 		this.apiRequest("closePOIexec"
+			+ "?id="+encodeURIComponent(id)
+			+ "&format=js"
+		);
+	},
+
+	/**
+	 * Mark bug as deleted.
+	 * @param Number id
+	*/
+	deleteBug: function(id) {
+		this.apiRequest("deletePOIexec"
 			+ "?id="+encodeURIComponent(id)
 			+ "&format=js"
 		);

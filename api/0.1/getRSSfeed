@@ -72,6 +72,8 @@ def main():
 			type = "closed bug"
 		elif c[3].find("<hr />") != -1:
                         type = "new comment"
+		elif c[4] == 2:
+			type = "deleted bug"
 		else:
 			type = "new bug"
 
