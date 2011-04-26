@@ -237,7 +237,7 @@ function init() {
 
     var iconClosed = new OpenLayers.Icon("http://osb/images/closed_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
     var iconOpen = new OpenLayers.Icon("http://osb/images/open_bug_marker.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
-    var iconKerb = new OpenLayers.Icon("http://osb/images/icon-border.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11));
+    var iconKerb = new OpenLayers.Icon("http://osb/images/kerb16.png", new OpenLayers.Size(16, 16), new OpenLayers.Pixel(-8, -8));
     var iconCars = new OpenLayers.Icon("http://osb/images/carparking32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -21));
     var iconPedestrians = new OpenLayers.Icon("http://osb/images/old_folks32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -21));
     var iconStairs = new OpenLayers.Icon("http://osb/images/stairs32.png", new OpenLayers.Size(36, 32), new OpenLayers.Pixel(-18, -21));
