@@ -326,6 +326,7 @@ OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "rough road" : "дефекты покрытия",
     "Rough road" : "Дефекты покрытия",
     "Mark as fixed" : "Пометить как исправленное",
+    "Remove" : "Удалить",
     "Add comment" : "Добавить комментарий",
     "Cancel" : "Отмена",
     "New obstacles can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
@@ -361,6 +362,7 @@ OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
     "rough road" : "дэфекты пакрыцця",
     "Rough road" : "Дэфекты пакрыцця",
     "Mark as fixed" : "Пазначыць як выпраўленае",
+    "Remove" : "Выдаліць",
     "Add comment" : "Дадаць каментар",
     "Cancel" : "Скасаваць",
     "New obstacles can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
