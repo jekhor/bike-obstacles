@@ -201,6 +201,24 @@ function init() {
     if (!location.hash) {
         //location.hash="#";
     }
+    function osm_getTileURL(bounds)
+    {
+	    var res = this.map.getResolution();
+	    var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+	    var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+	    var z = this.map.getZoom();
+	    var limit = Math.pow(2, z);
+
+	    if (y < 0 || y >= limit)
+	    {
+		    return OpenLayers.Util.getImagesLocation() + "404.png";
+	    }
+	    else
+	    {
+		    x = ((x % limit) + limit) % limit;
+		    return this.url + "x=" + x + "&y=" + y + "&z=" + z;
+	    }
+    }
 
     var options = {
         projection: new OpenLayers.Projection("EPSG:900913"),
@@ -230,7 +248,7 @@ function init() {
     belmapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
     var mapnik = new OpenLayers.Layer.OSM();
     var date = new Date();
-//    cops = new OpenLayers.Layer.OSM("Traffic calming", "http://91.208.39.18/cops/${z}/${x}/${y}.png?" + date.getTime(), {numZoomLevels: 19,  isBaseLayer: false,  type: 'png', splayOutsideMaxExtent: true, visibility: true});
+    var yasat = new OpenLayers.Layer.TMS("yandex.ru retiling", "http://wms.latlon.org/?request=GetTile&layers=yasat&", {  numZoomLevels: 19,  isBaseLayer: true,  type: 'png', getURL: osm_getTileURL, displayOutsideMaxExtent: true });
 
     //new OpenLayers.Layer.Markers("Cafés");
     markers = new OpenLayers.Layer.Markers("Markers");
@@ -255,7 +273,10 @@ function init() {
 
     var osbLayer = new OpenLayers.Layer.OpenStreetBugs("OpenStreetBugs", { serverURL: "http://osb/api/0.1/", permalinkURL: "http://osb/", theme: "/css/openstreetbugs.css", iconOpen: iconOpen, iconClosed: iconClosed, subtypeIcons: subtypeIcons});
     osb = new OpenLayers.Control.OpenStreetBugs(osbLayer);
-    map.addLayers([belmapnik, mapnik, markers, osbLayer]);
+
+    var hyb = new OpenLayers.Layer.TMS("MapSurfer.NET OSM Hybrid", "http://tiles3.mapsurfer.net/tms_h.ashx?", {  numZoomLevels: 19,  isBaseLayer: false,  type: 'png', getURL: osm_getTileURL, displayOutsideMaxExtent: true, visibility: false });
+
+    map.addLayers([belmapnik, mapnik, yasat, markers, osbLayer, hyb]);
     //map.addLayers([osbLayer]);
     //cafes.preFeatureInsert = style_osm_feature; 
 
