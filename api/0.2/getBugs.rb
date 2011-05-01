@@ -3,7 +3,9 @@
 
 require "mysql"
 require "cgi"
-require "json/pure"
+require "json/ext"
+
+require "./db_config.rb"
 
 cgi = CGI.new
 params = cgi.params
@@ -11,7 +13,7 @@ params = cgi.params
 bbox = nil
 bbox = params['bbox'][0].split(',').map {|v| v.to_f} if params['bbox'][0]
 
-db = Mysql.connect("localhost", "osb", "osb", "osb")
+db = Mysql.connect($dbhost, $dbname, $dbuser, $dbpassword)
 db.options(Mysql::SET_CHARSET_NAME, "utf8")
 
 db.query("SET CHARSET utf8")
