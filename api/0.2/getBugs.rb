@@ -107,7 +107,6 @@ class BugsController
       }
     }
 
-    sleep(2)
     @cgi.out {
       JSON.generate result
     }
