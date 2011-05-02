@@ -10,6 +10,104 @@ OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Clu
      * the attribute to use for comparison
      */
     attributes: [],
+
+    /**
+     * APIMethod: activate
+     * Activate the strategy.  Register any listeners, do appropriate setup.
+     * 
+     * Returns:
+     * {Boolean} The strategy was successfully activated.
+     */
+    activate: function() {
+        var activated = OpenLayers.Strategy.Cluster.prototype.activate.call(this);
+        if(activated) {
+            this.layer.events.on({
+                "afterfeaturesremoved": this.uncacheFeatures,
+                scope: this
+            });
+        }
+        return activated;
+    },
+    
+    /**
+     * APIMethod: deactivate
+     * Deactivate the strategy.  Unregister any listeners, do appropriate
+     *     tear-down.
+     * 
+     * Returns:
+     * {Boolean} The strategy was successfully deactivated.
+     */
+    deactivate: function() {
+        var deactivated = OpenLayers.Strategy.Cluster.prototype.deactivate.call(this);
+        if(deactivated) {
+            this.clearCache();
+            this.layer.events.un({
+                "afterfeaturesremoved": this.uncacheFeatures,
+                scope: this
+            });
+        }
+        return deactivated;
+    },
+
+     /**
+     * Method: cacheFeatures
+     * Cache features before they are added to the layer.
+     *
+     * Parameters:
+     * event - {Object} The event that this was listening for.  This will come
+     *     with a batch of features to be clustered.
+     *     
+     * Returns:
+     * {Boolean} False to stop features from being added to the layer.
+     */
+    cacheFeatures: function(event) {
+        var propagate = true;
+        if(!this.clustering) {
+            if (this.features === null)
+                this.features = [];
+
+            if ((event.type === "beforefeaturesadded") && (event.features !== null)) {
+                var new_features = [];
+                var clustering_needed = false;
+                for (var i = 0; i < event.features.length; i++) {
+                    var feature = event.features[i];
+                    if (feature.state === OpenLayers.State.INSERT)
+                        new_features.push(feature);
+                    else {
+                        this.features.push(feature);
+                        clustering_needed = true;
+                    }
+                }
+
+                if (clustering_needed)
+                    this.cluster();
+  
+                event.features = new_features;
+                this.features = this.features.concat(new_features);
+            } else {
+                this.cluster();
+                propagate = false;
+            }
+        }
+        return propagate;
+    },
+
+    uncacheFeatures: function(event) {
+        if (!this.clustering) {
+            var features = event.features;
+
+            if (event.features == this.features) {
+                this.features = null;
+                return true;
+            }
+
+            for (i = 0; i < features.length; i++) {
+                OpenLayers.Util.removeItem(this.features, features[i]);
+            }
+        }
+        return true;
+    },
+
     /**
      * Method: shouldCluster
      * Determine whether to include a feature in a given cluster.
