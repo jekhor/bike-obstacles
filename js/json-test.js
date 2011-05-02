@@ -28,8 +28,11 @@ function init() {
 
     var context = {
         getOpacity: function(feature) {
+            if (feature.cluster)
+                return 1;
+
             if (feature.fid == null)
-                return 0.1;
+                return 0.2;
             else
                 return 0.7;
         }
@@ -57,7 +60,7 @@ function init() {
     });
 
     var style_lookup = {
-        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 8},
+        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 4},
         'parked cars': {'externalGraphic': '/images/carparking32.png'},
         'pedestrians': {'externalGraphic': '/images/old_folks32.png'},
         'stairs': {'externalGraphic': '/images/stairs32.png'},
