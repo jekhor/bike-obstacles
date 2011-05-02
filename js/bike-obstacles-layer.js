@@ -497,7 +497,8 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 		{
             feature.popupClass = OpenLayers.Popup.FramedCloud.OpenStreetBugs;
             feature.lonlat = feature.geometry.getBounds().getCenterLonLat();
-			add = new OpenLayers.Popup.FramedCloud.OpenStreetBugs(feature.id + "_popup", feature.lonlat, feature.data.popupSize, null, null, true);
+            add = new OpenLayers.Popup.FramedCloud.OpenStreetBugs(feature.id + "_popup", feature.lonlat, feature.data.popupSize, null, null, true);
+            add.panMapIfOutOfView = false;
             add.anchor.size.w = 30;
             add.anchor.size.h = 30;
             add.anchor.offset.x = -15;
@@ -749,6 +750,8 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
 		var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
 		var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.projection);
 		var popup = new OpenLayers.Popup.FramedCloud.OpenStreetBugs("create_popup", lonlat, null, null, null, true);
+
+        popup.panMapIfOutOfView = false;
         this.newBugPopup = popup;
         this.osbug_makeform(popup, this.osbLayer);
 		this.map.addPopup(popup);
