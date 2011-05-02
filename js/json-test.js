@@ -29,18 +29,18 @@ function init() {
     var context = {
         getOpacity: function(feature) {
             if (feature.cluster)
-                return 1;
+                return 0.6;
 
             if (feature.fid == null)
                 return 0.2;
             else
-                return 0.7;
+                return 1;
         }
     };
 
     style = new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
-            'pointRadius' : 16,
+            'pointRadius' : 10,
             'graphicOpacity': "${getOpacity}"
         }, {
             'context': context
@@ -60,17 +60,17 @@ function init() {
     });
 
     var style_lookup = {
-        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 4},
+        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 6},
         'parked cars': {'externalGraphic': '/images/carparking32.png'},
         'pedestrians': {'externalGraphic': '/images/old_folks32.png'},
         'stairs': {'externalGraphic': '/images/stairs32.png'},
         'dogs': {'externalGraphic': '/images/dog32.png'},
         'rough road': {'externalGraphic': '/images/rough-road32.png'},
-        'other': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 11},
+        'other': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8},
     };
 
     var style_lookup_closed = {
-        1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 11},
+        1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 8},
     };
 
     var style_lookup_closed_highlight = {
