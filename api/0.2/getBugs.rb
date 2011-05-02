@@ -37,9 +37,9 @@ class BugsController
     bbox = @params['bbox'][0].split(',').map {|v| v.to_f} if @params['bbox'][0]
 
     if bbox
-      res = @db.query("SELECT * from bugs WHERE lon >= #{bbox[0]} AND lon <= #{bbox[2]} AND lat >= #{bbox[1]} AND lat <= #{bbox[3]} ORDER BY subtype")
+      res = @db.query("SELECT * from bugs WHERE lon >= #{bbox[0]} AND lon <= #{bbox[2]} AND lat >= #{bbox[1]} AND lat <= #{bbox[3]} AND type != 2 ORDER BY subtype")
     else
-      res = @db.query("SELECT * from bugs ORDER BY subtype")
+      res = @db.query("SELECT * from bugs WHERE type != 2 ORDER BY subtype")
     end
 
     j = Hash.new
