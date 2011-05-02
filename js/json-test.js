@@ -26,18 +26,33 @@ function init() {
     belmapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
     var mapnik = new OpenLayers.Layer.OSM();
 
+    var context = {
+        getOpacity: function(feature) {
+            if (feature.fid == null)
+                return 0.1;
+            else
+                return 0.7;
+        }
+    };
+
     style = new OpenLayers.StyleMap({
         'default': new OpenLayers.Style({
             'pointRadius' : 16,
-            'graphicOpacity': 0.7,
+            'graphicOpacity': "${getOpacity}"
+        }, {
+            'context': context
         }),
         'select': new OpenLayers.Style({
             'pointRadius' : 20,
-            'graphicOpacity': 0.7,
+            'graphicOpacity': "${getOpacity}"
+        }, {
+            'context': context
         }),
         'temporary': new OpenLayers.Style({
             'pointRadius' : 20,
-            'graphicOpacity': 0.7,
+            'graphicOpacity': "${getOpacity}"
+        }, {
+            'context': context
         })
     });
 
@@ -107,11 +122,24 @@ function init() {
     selectCtrl.onSelect = bikeObstacles.featureSelect;
     selectCtrl.onUnselect = bikeObstacles.featureUnselect;
 
+    var edit = new OpenLayers.Control.ModifyFeature(bikeObstacles, {
+        title: "Modify Feature",
+        displayClass: "olControlModifyFeature"
+    });
+
+    osbCtrl = new OpenLayers.Control.OpenStreetBugs(bikeObstacles);
+
     map.addControl(highlightCtrl);
     highlightCtrl.activate();
 
     map.addControl(selectCtrl);
     selectCtrl.activate();
+
+    map.addControl(osbCtrl);
+    osbCtrl.activate();
+
+//    map.addControl(edit);
+//    edit.activate();
 
 /*
     var bugs = new OpenLayers.Layer.Vector("Bugs", {
@@ -213,3 +241,76 @@ function init() {
     sorry.id = "sorry";
     document.body.insertBefore(sorry, $("content"));
 }
+
+OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
+    "Say": "Сообщить",
+    "Your message:": "Комментарий",
+    "Type:": "Вид:",
+    "Your name:": "Представьтесь:",
+    "NoName": "Кто-то",
+    "Please fill in your name": "Представьтесь, пожалуйста",
+    "Comment is required": "Впишите, пожалуйста, комментарий",
+    "Something's wrong": "Другое",
+    "Description": "Описание",
+    "Comment": "Комментарий",
+    "Permalink": "Постоянная ссылка",
+    "Zoom": "Приблизить",
+    "Unresolved Problem": "Существующая проблема",
+    "Fixed Problem": "Исправленная проблема",
+    "Change": "Изменить",
+    "Nickname": "Представьтесь",
+    "Kerb" : "Бордюр",
+    "kerb" : "бордюр",
+    "Parked cars" : "припаркованные машины",
+    "parked cars" : "припаркованные машины",
+    "Pedestrians" : "Пешеходы",
+    "pedestrians" : "пешеходы",
+    "Stairs" : "Ступеньки",
+    "stairs" : "ступеньки",
+    "Dogs" : "Собаки",
+    "dogs" : "собаки",
+    "rough road" : "дефекты покрытия",
+    "Rough road" : "Дефекты покрытия",
+    "Mark as fixed" : "Пометить как исправленное",
+    "Remove" : "Удалить",
+    "Add comment" : "Добавить комментарий",
+    "Cancel" : "Отмена",
+    "New obstacles can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
+});
+
+OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
+    "Say": "Паведаміць",
+    "Your message:": "Каментар",
+    "Type:": "Тып:",
+    "Your name:": "Вашае імя:",
+    "NoName": "Нехта",
+    "Please fill in your name": "Калі ласка, пазначце вашае імя",
+    "Comment is required": "Каментар абавязковы, напішыце яго, калі ласка",
+    "Something's wrong": "Іншае",
+    "Description": "Апісанне",
+    "Comment": "Каментар",
+    "Permalink": "Сталая спасылка",
+    "Zoom": "Наблізіць",
+    "Unresolved Problem": "Існуючая праблема",
+    "Fixed Problem": "Выпраўленая праблема",
+    "Change": "Змяніць/закрыць",
+    "Nickname": "Мянушка",
+    "Kerb" : "Бардзюр",
+    "kerb" : "бардзюр",
+    "Parked cars" : "Прыпаркаваныя машыны",
+    "parked cars" : "прыпаркаваныя машыны",
+    "Pedestrians" : "Пешаходы",
+    "pedestrians" : "пешаходы",
+    "Stairs" : "Прыступкі",
+    "stairs" : "прыступкі",
+    "Dogs" : "Сабакі",
+    "dogs" : "сабакі",
+    "rough road" : "дэфекты пакрыцця",
+    "Rough road" : "Дэфекты пакрыцця",
+    "Mark as fixed" : "Пазначыць як выпраўленае",
+    "Remove" : "Выдаліць",
+    "Add comment" : "Дадаць каментар",
+    "Cancel" : "Скасаваць",
+    "New obstacles can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
+});
+

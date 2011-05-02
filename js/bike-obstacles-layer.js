@@ -75,14 +75,32 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	*/
 	theme : "http://osm.cdauth.eu/openstreetbugs/openstreetbugs.css",
 
+    onSuccessSave: function(evt) {
+        var features = evt['response'].reqFeatures;
+
+        for (var i = 0; i < features.length; i++) {
+            var feature = features[i];
+            feature = feature._original || feature;
+            this.drawFeature(feature);
+        }
+    },
 	/**
 	 * @param String name
 	*/
     initialize : function(name, options)
     {
+        var saveStrategy = new OpenLayers.Strategy.Save({
+            auto: true
+        });
+
+        saveStrategy.events.on({
+            'success': this.onSuccessSave,
+            scope: this
+        });
+
         OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({
             projection: new OpenLayers.Projection("EPSG:4326"),
-            strategies: [new OpenLayers.Strategy.Fixed()],
+            strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
             protocol: new OpenLayers.Protocol.HTTP({
                 url: this.apiURL + "/getBugs.rb",
                 format: new OpenLayers.Format.GeoJSON()
@@ -383,17 +401,17 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	 * @param OpenLayers.LonLat lonlat The coordinates in the API projection.
 	 * @param String description
 	*/
-    /* TODO
-	createBug: function(lonlat, description, type) {
-		this.apiRequest("addPOIexec"
-			+ "?lat="+encodeURIComponent(lonlat.lat)
-			+ "&lon="+encodeURIComponent(lonlat.lon)
-			+ "&text="+encodeURIComponent(description + " [" + this.getUserName() + "]")
-			+ "&subtype="+encodeURIComponent(type)
-			+ "&format=js"
-		);
+	createBug: function(lonlat, description, subtype) {
+        var g = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+        var f = new OpenLayers.Feature.Vector(g, {
+            'comments': [description + " [" + this.getUserName() + "]"],
+            'subtype': subtype,
+            'type': 0
+        });
+        f.state = OpenLayers.State.INSERT;
+        this.addFeatures([f]);
 	},
-*/
+
 	/**
 	 * Adds a comment to a bug.
 	 * @param Number id
@@ -538,6 +556,195 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	},
 
 	CLASS_NAME: "OpenLayers.Layer.OpenStreetBugs"
+});
+
+
+/**
+ * An OpenLayers control to create new bugs on mouse clicks on the map. Add an instance of this to your map using
+ * the OpenLayers.Map.addControl() method and activate() it.
+*/
+
+OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
+	title : null, // See below because of translation call
+
+	/**
+	 * The icon to be used for the temporary markers that the “create bug” popup belongs to.
+	 * @var OpenLayers.Icon
+	*/
+//	icon : new OpenLayers.Icon("http://openstreetbugs.schokokeks.org/client/icon_error_add.png", new OpenLayers.Size(22, 22), new OpenLayers.Pixel(-11, -11)),
+
+	/**
+	 * An instance of the OpenStreetBugs layer that this control shall be connected to. Is set in the constructor.
+	 * @var OpenLayers.Layer.OpenStreetBugs
+	*/
+	osbLayer : null,
+
+    newBugPopup: null,
+	/**
+	 * @param OpenLayers.Layer.OpenStreetBugs osbLayer The OpenStreetBugs layer that this control will be connected to.
+	*/
+	initialize: function(osbLayer, options) {
+		this.osbLayer = osbLayer;
+
+		this.title = OpenLayers.i18n("Create OpenStreetBug");
+
+		OpenLayers.Control.prototype.initialize.apply(this, [ options ]);
+
+		this.events.register("activate", this, function() {
+			if(!this.osbLayer.getVisibility())
+				this.osbLayer.setVisibility(true);
+		});
+
+		this.osbLayer.events.register("visibilitychanged", this, function() {
+			if(this.active && !this.osbLayer.getVisibility())
+				this.osbLayer.setVisibility(true);
+		});
+	},
+
+	destroy: function() {
+		if (this.handler)
+			this.handler.destroy();
+		this.handler = null;
+
+		OpenLayers.Control.prototype.destroy.apply(this, arguments);
+	},
+
+	draw: function() {
+		this.handler = new OpenLayers.Handler.Click(this, {'click': this.click}, { 'single': true, 'double': false, 'pixelTolerance': 0, 'stopSingle': false, 'stopDouble': false });
+	},
+
+    osbug_makeform: function(popup, osbLayer) {
+        var control = this;
+        var newContent = document.createElement("div");
+        var el1,el2,el3;
+        var types = {
+                "kerb": "Kerb",
+                "parked cars": "Parked cars",
+                "pedestrians": "Pedestrians",
+                "stairs": "Stairs",
+                "dogs": "Dogs",
+                "rough road": "Rough road",
+                "other": "Other"
+        };
+
+        var el_form = document.createElement("form");
+
+        newContent.appendChild(el_form);
+
+        el1 = document.createElement("dl");
+
+        el2 = document.createElement("dt");
+        el2.appendChild(document.createTextNode(OpenLayers.i18n("Type:")));
+        el1.appendChild(el2);
+        el2 = document.createElement("dd");
+
+        for (var i in types) {
+                var obstacleType1 = document.createElement("input");
+                obstacleType1.id = i;
+                obstacleType1.value = i;
+                obstacleType1.type = "radio";
+                obstacleType1.name = "type";
+                el2.appendChild(obstacleType1);
+                var label = document.createElement("label");
+                label.htmlFor = i;
+                label.appendChild(document.createTextNode(OpenLayers.i18n(types[i])));
+                el2.appendChild(label);
+                el2.appendChild(document.createElement("br"));
+                if (i == "kerb")
+                    obstacleType1.checked = true;
+        }
+
+        el1.appendChild(el2);
+
+        el2 = document.createElement("dt");
+        el2.appendChild(document.createTextNode(OpenLayers.i18n("Your name:")));
+        el1.appendChild(el2);
+        el2 = document.createElement("dd");
+        var inputUsername = document.createElement("input");
+        if (this.osbLayer.usernameshort != null) {
+            if (this.osbLayer.usernameshort == "") {
+                this.osbLayer.usernameshort = "anonymous";
+            }
+        } else {
+            if (this.osbLayer.username != null) {
+                this.osbLayer.usernameshort = this.osbLayer.username;
+            }
+        }
+        if (this.osbLayer.usernameshort == "NoName") {
+            this.osbLayer.usernameshort = OpenLayers.i18n("NoName");
+        }
+        inputUsername.className = "osbUsername";
+        inputUsername.id = "osbuser";
+        inputUsername.value = this.osbLayer.usernameshort;
+        el2.appendChild(inputUsername);
+        el1.appendChild(el2);
+
+        el2 = document.createElement("dt");
+        el2.appendChild(document.createTextNode(OpenLayers.i18n("Your message:")));
+        el1.appendChild(el2);
+        el2 = document.createElement("dd");
+        var inputDescription = document.createElement("input");
+        inputDescription.id = "osbtext";
+        el2.appendChild(inputDescription);
+        el1.appendChild(el2);
+        el_form.appendChild(el1);
+
+        el1 = document.createElement("div");
+        el2 = document.createElement("button");
+        el2.innerHTML = OpenLayers.i18n("Say");
+        el2.id = "saybtn";
+        el2.onclick = function() {
+            var l = popup.lonlat.clone();
+            //                l.transform(osbLayer.map.projection, osbLayer.projection)
+            /* if ($("osbuser").value == "NoName") {
+               alert(OpenLayers.i18n("Please fill in your name"));
+               return false;
+               } */
+
+            var tmp = "";
+            for (var i in types) {
+                if ($(i).checked)
+                    tmp = i;
+            }
+
+            osbLayer.setUserName($("osbuser").value);
+            osbLayer.usernameshort = $("osbuser").value;
+            osbLayer.createBug(l, $("osbtext").value, tmp);
+            //                popup.setContentHTML(OpenLayers.i18n("Thanks for your response, it will be taken into account soon."));
+            //                popup.updateSize();
+            osbLayer.map.removePopup(popup);
+            popup.destroy();
+            control.newBugPopup = null;
+            return false;
+        };
+        el1.appendChild(el2);
+        el_form.appendChild(el1);
+
+        popup.setContentHTML(newContent);
+    },
+
+	/**
+	 * Map clicking event handler. Adds a temporary marker with a popup to the map, the popup contains the form to add a bug.
+	*/
+	click: function(e) {
+		if(!this.map) return true;
+
+        if (this.newBugPopup != null) {
+            this.map.removePopup(this.newBugPopup);
+            this.newBugPopup.destroy;
+            this.newBugPopup = null;
+        }
+
+		var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
+		var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.projection);
+		var popup = new OpenLayers.Popup.FramedCloud.OpenStreetBugs("create_popup", lonlat, null, null, null, true);
+        this.newBugPopup = popup;
+        this.osbug_makeform(popup, this.osbLayer);
+		this.map.addPopup(popup);
+		popup.updateSize();
+	},
+
+	CLASS_NAME: "OpenLayers.Control.OpenStreetBugs"
 });
 
 
