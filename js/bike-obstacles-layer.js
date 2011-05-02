@@ -10,6 +10,8 @@
 	License <http://www.gnu.org/licenses/> for more details.
 */
 
+document.write('<script src="js/strategy-cluster-extended.js" type="text/javascript"></script>');
+
 /**
  * A fully functional OpenStreetBugs layer. See http://openstreetbugs.schokokeks.org/.
  * Even though the OpenStreetBugs API originally does not intend this, you can create multiple instances of this Layer and add them to different maps (or to one single map for whatever crazy reason) without problems.
@@ -98,9 +100,15 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
             scope: this
         });
 
+        var clusterStrategy = new OpenLayers.Strategy.AttributesCluster({
+            attributes: ['subtype', 'type'],
+            threshold: 2,
+            distance: 10
+        });
+
         OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({
             projection: new OpenLayers.Projection("EPSG:4326"),
-            strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
+            strategies: [new OpenLayers.Strategy.BBOX(), clusterStrategy, saveStrategy],
             protocol: new OpenLayers.Protocol.HTTP({
                 url: this.apiURL + "/getBugs.rb",
                 format: new OpenLayers.Format.GeoJSON()
@@ -481,6 +489,9 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	 * @param Number id
 	*/
 	showPopup: function(feature) {
+        if (feature.cluster)
+            return;
+
 		var add = null;
 		if(!feature.popup)
 		{
