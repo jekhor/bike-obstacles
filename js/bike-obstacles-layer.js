@@ -103,14 +103,15 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
         var clusterStrategy = new OpenLayers.Strategy.AttributesCluster({
             attributes: ['subtype', 'type'],
             threshold: 2,
-            distance: 10
+            distance: 8,
+            maxZoom: 16
         });
 
         OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({
             projection: new OpenLayers.Projection("EPSG:4326"),
             strategies: [new OpenLayers.Strategy.BBOX(), clusterStrategy, saveStrategy],
             protocol: new OpenLayers.Protocol.HTTP({
-                url: this.apiURL + "/getBugs.rb",
+                url: this.apiURL + "/bugs.rb",
                 format: new OpenLayers.Format.GeoJSON()
             })}, options) ]);
 
@@ -242,13 +243,12 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	*/
 
 	setPopupContent: function(feature) {
-//		if(!this.bugs[id].popup)
-//			return;
+        if (!feature.popup)
+            return;
 
 		var el1,el2,el3;
 		var layer = this;
 
-//		var icon = this.subtypeIcons[putAJAXMarker.bugs[id][3]] == null ? this.iconOpen : this.subtypeIcons[putAJAXMarker.bugs[id][3]];
 		var subtypeText = OpenLayers.i18n(feature.attributes['subtype']);
         var closed = (feature.attributes['type'] == 1);
 
@@ -328,6 +328,11 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2.appendChild(document.createTextNode(OpenLayers.i18n("Has been fixed.")));
 			el1.appendChild(el2);
 			containerDescription.appendChild(el1);
+            el1 = document.createElement("input");
+            el1.setAttribute("type", "button");
+            el1.value = OpenLayers.i18n("Reopen");
+            el1.onclick = function() {layer.reopenBug(feature); layer.hidePopup(feature); return false; };
+            containerDescription.appendChild(el1);
 		}
 		else if(!this.readonly)
 		{
@@ -340,7 +345,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			containerDescription.appendChild(el1);
 
 			var el_form = document.createElement("form");
-			el_form.onsubmit = function(){ if(inputComment.value.match(/^\s*$/)) return false; layer.submitComment(id, inputComment.value); layer.hidePopup(id); return false; };
+			el_form.onsubmit = function(){ if(inputComment.value.match(/^\s*$/)) return false; layer.submitComment(feature, inputComment.value); layer.hidePopup(feature); return false; };
 
 			el1 = document.createElement("dl");
 			el2 = document.createElement("dt");
@@ -375,7 +380,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2 = document.createElement("li");
 			el3 = document.createElement("input");
 			el3.setAttribute("type", "button");
-			el3.onclick = function(){ this.form.onsubmit(); layer.closeBug(id); layer.bugs[id].popup.hide(); return false; };
+			el3.onclick = function(){ if (!inputComment.value.match(/^\s*$/)) { layer.closeBug(feature, inputComment.value); layer.hidePopup(feature); return false; } else {inputComment.style.background = 'Yellow'; inputComment.select()}};
 			el3.value = OpenLayers.i18n("Mark as fixed");
 			el2.appendChild(el3);
 			el1.appendChild(el2);
@@ -385,7 +390,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2 = document.createElement("li");
 			el3 = document.createElement("input");
 			el3.setAttribute("type", "button");
-			el3.onclick = function(){ this.form.onsubmit(); layer.deleteBug(id); layer.bugs[id].popup.hide(); layer.bugs[id].destroy(); return false; };
+			el3.onclick = function(){ if (!inputComment.value.match(/^\s*$/)) { layer.deleteBug(feature, inputComment.value); layer.hidePopup(feature); return false; } else {inputComment.style.background = 'Yellow'; inputComment.select()}};
 			el3.value = OpenLayers.i18n("Delete");
 			el2.appendChild(el3);
 			el1.appendChild(el2);
@@ -412,7 +417,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	createBug: function(lonlat, description, subtype) {
         var g = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
         var f = new OpenLayers.Feature.Vector(g, {
-            'comments': [description + " [" + this.getUserName() + "]"],
+            'comments': [description + " [" + this.getUserName() + ", " + new Date() + "]"],
             'subtype': subtype,
             'type': 0
         });
@@ -425,41 +430,51 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 	 * @param Number id
 	 * @param String comment
 	*/
-    /* TODO
-	submitComment: function(id, comment) {
-		this.apiRequest("editPOIexec"
-			+ "?id="+encodeURIComponent(id)
-			+ "&text="+encodeURIComponent(comment + " [" + this.getUserName() + "]")
-			+ "&format=js"
-		);
+	submitComment: function(feature, comment) {
+        feature.attributes['comments'].push(comment + " [" + this.getUserName() + ", " + new Date() + "]");
+        feature.state = OpenLayers.State.UPDATE;
+        this.events.triggerEvent("featuremodified", {feature: feature});
+        this.events.triggerEvent("afterfeaturemodified", {feature: feature, modified: true});
 	},
 
-    */
 	/**
 	 * Marks a bug as fixed.
 	 * @param Number id
 	*/
-    /* TODO
-	closeBug: function(id) {
-		this.apiRequest("closePOIexec"
-			+ "?id="+encodeURIComponent(id)
-			+ "&format=js"
-		);
+	closeBug: function(feature, comment) {
+        feature.attributes['type'] = 1;
+        feature.attributes['comments'].push(OpenLayers.i18n("Fixed: ") + comment + " [" + this.getUserName() + ", " + new Date() + "]");
+        feature.state = OpenLayers.State.UPDATE;
+        this.events.triggerEvent("featuremodified", {feature: feature});
+        this.events.triggerEvent("afterfeaturemodified", {feature: feature, modified: true});
 	},
-    */
+
+	/**
+	 * Marks a bug as open again.
+	 * @param Number id
+	*/
+	reopenBug: function(feature) {
+        feature.attributes['type'] = 0;
+        feature.attributes['comments'].push(OpenLayers.i18n("Reopened ") + " [" + this.getUserName() + ", " + new Date() + "]");
+        feature.state = OpenLayers.State.UPDATE;
+        this.events.triggerEvent("featuremodified", {feature: feature});
+        this.events.triggerEvent("afterfeaturemodified", {feature: feature, modified: true});
+	},
 
 	/**
 	 * Mark bug as deleted.
 	 * @param Number id
 	*/
-    /* TODO
-	deleteBug: function(id) {
-		this.apiRequest("deletePOIexec"
-			+ "?id="+encodeURIComponent(id)
-			+ "&format=js"
-		);
+	deleteBug: function(feature, comment) {
+        feature.attributes['comments'].push(OpenLayers.i18n("Deleted: ") + comment + " [" + this.getUserName() + ", " + new Date() + "]");
+        feature.state = OpenLayers.State.UPDATE;
+        this.events.triggerEvent("featuremodified", {feature: feature});
+        this.events.triggerEvent("afterfeaturemodified", {feature: feature, modified: true});
+        feature.state = OpenLayers.State.DELETE;
+        this.events.triggerEvent("featuremodified", {feature: feature});
+        this.events.triggerEvent("afterfeaturemodified", {feature: feature, modified: true});
+        this.drawFeature(feature);
 	},
-    */
 
 	/**
 	 * Removes the content of a marker popup (to reduce the amount of needed resources).
@@ -492,9 +507,9 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
         if (feature.cluster)
             return;
 
-		var add = null;
-		if(!feature.popup)
-		{
+        var add = null;
+        if(!feature.popup)
+        {
             feature.popupClass = OpenLayers.Popup.FramedCloud.OpenStreetBugs;
             feature.lonlat = feature.geometry.getBounds().getCenterLonLat();
             add = new OpenLayers.Popup.FramedCloud.OpenStreetBugs(feature.id + "_popup", feature.lonlat, feature.data.popupSize, null, null, true);
@@ -503,9 +518,9 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
             add.anchor.size.h = 30;
             add.anchor.offset.x = -15;
             add.anchor.offset.y = -15;
-			add.events.register("close", this, function() {this.onPopupClose(feature)});
+            add.events.register("close", this, function() {this.onPopupClose(feature)});
             feature.popup = add;
-		}
+        }
 		else if(feature.popup.visible())
 			return;
 
@@ -738,8 +753,8 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
 	/**
 	 * Map clicking event handler. Adds a temporary marker with a popup to the map, the popup contains the form to add a bug.
 	*/
-	click: function(e) {
-		if(!this.map) return true;
+    click: function(e) {
+        if(!this.map) return true;
 
         if (this.newBugPopup != null) {
             this.map.removePopup(this.newBugPopup);
@@ -747,16 +762,20 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
             this.newBugPopup = null;
         }
 
-		var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
-		var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.projection);
-		var popup = new OpenLayers.Popup.FramedCloud.OpenStreetBugs("create_popup", lonlat, null, null, null, true);
+        var feature = this.osbLayer.getFeatureFromEvent(e);
+        if (feature)
+            return true;
+
+        var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
+        var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.projection);
+        var popup = new OpenLayers.Popup.FramedCloud.OpenStreetBugs("create_popup", lonlat, null, null, null, true);
 
         popup.panMapIfOutOfView = false;
         this.newBugPopup = popup;
         this.osbug_makeform(popup, this.osbLayer);
-		this.map.addPopup(popup);
-		popup.updateSize();
-	},
+        this.map.addPopup(popup);
+        popup.updateSize();
+    },
 
 	CLASS_NAME: "OpenLayers.Control.OpenStreetBugs"
 });
@@ -791,6 +810,11 @@ OpenLayers.Popup.FramedCloud.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Po
 
 		OpenLayers.Popup.FramedCloud.prototype.initialize.apply(this, args);
 
+//        this.maxSize.w = 300;
+        this.maxSize.h = 600
+//        this.minSize.w = 100;
+//        this.minSize.h = 100
+
 		this.events.addEventType("close");
 
 		this.setContentHTML(arguments[3]);
@@ -818,6 +842,19 @@ OpenLayers.Popup.FramedCloud.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Po
 			this.updateSize();
 		}
 	},
+
+    /**
+     * Method: setSize
+     * Used to adjust the size of the popup. 
+     *
+     * Parameters:
+     * contentSize - {<OpenLayers.Size>} the new size for the popup's 
+     *     contents div (in pixels).
+     */
+    setSize:function(contentSize) { 
+		OpenLayers.Popup.FramedCloud.prototype.setSize.apply(this, arguments);
+    },
+
 
 	destroy: function() {
 		this.contentDom = null;
@@ -853,7 +890,7 @@ OpenLayers.Lang.en = OpenLayers.Util.extend(OpenLayers.Lang.en, {
 	"Unresolved Error" : "Unresolved Error",
 	"Description" : "Description",
 	"Comment" : "Comment",
-	"Has been fixed." : "This error has been fixed already. However, it might take a couple of days before the map image is updated.",
+	"Has been fixed." : "This obstacle has been fixed.",
 	"Comment/Close" : "Comment/Close",
 	"Nickname" : "Nickname",
 	"Add comment" : "Add comment",
@@ -867,135 +904,77 @@ OpenLayers.Lang.en = OpenLayers.Util.extend(OpenLayers.Lang.en, {
 	"Zoom" : "Zoom"
 });
 
-OpenLayers.Lang.de = OpenLayers.Util.extend(OpenLayers.Lang.de, {
-	"Fixed Error" : "Behobener Fehler",
-	"Unresolved Error" : "Offener Fehler",
-	"Description" : "Beschreibung",
-	"Comment" : "Kommentar",
-	"Has been fixed." : "Der Fehler wurde bereits behoben. Es kann jedoch bis zu einigen Tagen dauern, bis die Kartenansicht aktualisiert wird.",
-	"Comment/Close" : "Kommentieren/Schließen",
-	"Nickname" : "Benutzername",
-	"Add comment" : "Kommentar hinzufügen",
-	"Mark as fixed" : "Als behoben markieren",
-	"Cancel" : "Abbrechen",
-	"Create OpenStreetBug" : "OpenStreetBug melden",
-	"Create bug" : "Bug anlegen",
-	"Bug description" : "Fehlerbeschreibung",
-	"Create" : "Anlegen",
-	"Permalink" : "Permalink",
-	"Zoom" : "Zoom"
+OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
+    "Say": "Сообщить",
+    "Your message:": "Комментарий",
+    "Type:": "Вид:",
+    "Your name:": "Представьтесь:",
+    "NoName": "Кто-то",
+    "Please fill in your name": "Представьтесь, пожалуйста",
+    "Comment is required": "Впишите, пожалуйста, комментарий",
+    "Something's wrong": "Другое",
+    "Description": "Описание",
+    "Comment": "Комментарий",
+	"Has been fixed." : "Это препятствие помечено как исправленное",
+    "Permalink": "Постоянная ссылка",
+    "Zoom": "Приблизить",
+    "Unresolved Problem": "Существующая проблема",
+    "Fixed Problem": "Исправленная проблема",
+    "Change": "Изменить",
+    "Nickname": "Представьтесь",
+    "Kerb" : "Бордюр",
+    "kerb" : "бордюр",
+    "Parked cars" : "припаркованные машины",
+    "parked cars" : "припаркованные машины",
+    "Pedestrians" : "Пешеходы",
+    "pedestrians" : "пешеходы",
+    "Stairs" : "Ступеньки",
+    "stairs" : "ступеньки",
+    "Dogs" : "Собаки",
+    "dogs" : "собаки",
+    "rough road" : "дефекты покрытия",
+    "Rough road" : "Дефекты покрытия",
+    "Mark as fixed" : "Пометить как исправленное",
+    "Remove" : "Удалить",
+    "Add comment" : "Добавить комментарий",
+    "Cancel" : "Отмена",
+    "New obstacles can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
 });
 
-OpenLayers.Lang.fr = OpenLayers.Util.extend(OpenLayers.Lang.fr, {
-	"Fixed Error" : "Erreur corrigée",
-	"Unresolved Error" : "Erreur non corrigée",
-	"Description" : "Description",
-	"Comment" : "Commentaire",
-	"Has been fixed." : "Cette erreur a déjà été corrigée. Cependant, il peut être nécessaire d'attendre quelques jours avant que l'image de la carte ne soit mise à jour.",
-	"Comment/Close" : "Commenter/Fermer",
-	"Nickname" : "Surnom",
-	"Add comment" : "Ajouter un commentaire",
-	"Mark as fixed" : "Marquer comme corrigé",
-	"Cancel" : "Annuler",
-	"Create OpenStreetBug" : "Créer OpenStreetBug",
-	"Create bug" : "Ajouter un bug",
-	"Bug description" : "Description du bug",
-	"Create" : "Créer",
-	"Permalink" : "Lien permanent",
-	"Zoom" : "Zoom"
+OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
+    "Say": "Паведаміць",
+    "Your message:": "Каментар",
+    "Type:": "Тып:",
+    "Your name:": "Вашае імя:",
+    "NoName": "Нехта",
+    "Please fill in your name": "Калі ласка, пазначце вашае імя",
+    "Comment is required": "Каментар абавязковы, напішыце яго, калі ласка",
+    "Something's wrong": "Іншае",
+    "Description": "Апісанне",
+    "Comment": "Каментар",
+	"Has been fixed." : "Гэтая праблема была пазначаная як выпраўленая",
+    "Permalink": "Сталая спасылка",
+    "Zoom": "Наблізіць",
+    "Unresolved Problem": "Існуючая праблема",
+    "Fixed Problem": "Выпраўленая праблема",
+    "Change": "Змяніць/закрыць",
+    "Nickname": "Мянушка",
+    "Kerb" : "Бардзюр",
+    "kerb" : "бардзюр",
+    "Parked cars" : "Прыпаркаваныя машыны",
+    "parked cars" : "прыпаркаваныя машыны",
+    "Pedestrians" : "Пешаходы",
+    "pedestrians" : "пешаходы",
+    "Stairs" : "Прыступкі",
+    "stairs" : "прыступкі",
+    "Dogs" : "Сабакі",
+    "dogs" : "сабакі",
+    "rough road" : "дэфекты пакрыцця",
+    "Rough road" : "Дэфекты пакрыцця",
+    "Mark as fixed" : "Пазначыць як выпраўленае",
+    "Remove" : "Выдаліць",
+    "Add comment" : "Дадаць каментар",
+    "Cancel" : "Скасаваць",
+    "New obstacles can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
 });
 
-OpenLayers.Lang.nl = OpenLayers.Util.extend(OpenLayers.Lang.nl, {
-	"Fixed Error" : "Fout verholpen",
-	"Unresolved Error" : "Openstaande fout",
-	"Description" : "Beschrijving",
-	"Comment" : "Kommentaar",
-	"Has been fixed." : "De fout is al eerder opgelost. Het kan echter nog een paar dagen duren voordat het kaartmateriaal geactualiseerd is.",
-	"Comment/Close" : "Bekommentariëren/Sluiten",
-	"Nickname" : "Gebruikersnaam",
-	"Add comment" : "Kommentaar toevoegen",
-	"Mark as fixed" : "Als opgelost aanmerken",
-	"Cancel" : "Afbreken",
-	"Create OpenStreetBug" : "OpenStreetBug melden",
-	"Create bug" : "Bug melden",
-	"Bug description" : "Foutomschrijving",
-	"Create" : "Aanmaken",
-	"Permalink" : "Permalink",
-	"Zoom" : "Zoom"
-});
-
-OpenLayers.Lang.it = OpenLayers.Util.extend(OpenLayers.Lang.it, {
-	"Fixed Error" : "Sbaglio coretto",
-	"Unresolved Error" : "Sbaglio non coretto",
-	"Description" : "Descrizione",
-	"Comment" : "Commento",
-	"Has been fixed." : "Questo sbaglio è già coretto. Forse ci metto qualche giorni per aggiornare anche i quadri.",
-	"Comment/Close" : "Commenta/Chiude",
-	"Nickname" : "Nome",
-	"Add comment" : "Aggiunge commento",
-	"Mark as fixed" : "Marca che è coretto",
-	"Cancel" : "Annulla",
-	"Create OpenStreetBug" : "Aggiunge OpenStreetBug",
-	"Create bug" : "Aggiunge un sbaglio",
-	"Bug description" : "Descrizione del sbaglio",
-	"Create" : "Aggiunge",
-	"Permalink" : "Permalink",
-	"Zoom" : "Zoom"
-});
-
-OpenLayers.Lang.ro = OpenLayers.Util.extend(OpenLayers.Lang.ro, {
-	"Fixed Error" : "Eroare rezolvată",
-	"Unresolved Error" : "Eroare nerezolvată",
-	"Description" : "Descriere",
-	"Comment" : "Comentariu",
-	"Has been fixed." : "Această eroare a fost rezolvată. Totuși este posibil să dureze câteva zile până când imaginea hărții va fi actualizată.",
-	"Comment/Close" : "Comentariu/Închide",
-	"Nickname" : "Nume",
-	"Add comment" : "Adaugă comentariu",
-	"Mark as fixed" : "Marchează ca rezolvată",
-	"Cancel" : "Anulează",
-	"Create OpenStreetBug" : "Crează OpenStreetBug",
-	"Create bug" : "Adaugă eroare",
-	"Bug description" : "Descrierea erorii",
-	"Create" : "Adaugă",
-	"Permalink" : "Permalink",
-	"Zoom" : "Zoom"
-});
-
-OpenLayers.Lang.hu = OpenLayers.Util.extend(OpenLayers.Lang.hu, {
-	"Fixed Error" : "Javított hiba",
-	"Unresolved Error" : "Megoldatlan hiba",
-	"Description" : "Leírás",
-	"Comment" : "Megjegyzés",
-	"Has been fixed." : "Ezt a hibát már javították, azonban eltarthat néhány napig, mire a térkép frissül.",
-	"Comment/Close" : "Megjegyzés/Bezárás",
-	"Nickname" : "Becenév",
-	"Add comment" : "Megjegyzés hozzáadása",
-	"Mark as fixed" : "Jelölés javítottként",
-	"Cancel" : "Mégse",
-	"Create OpenStreetBug" : "OpenStreetBug létrehozása",
-	"Create bug" : "Hiba létrehozása",
-	"Bug description" : "Hiba leírása",
-	"Create" : "Létrehozás",
-	"Permalink" : "Permalink",
-	"Zoom" : "Nagyítás"
-});
-
-OpenLayers.Lang.es = OpenLayers.Util.extend(OpenLayers.Lang.es, {
-	"Fixed Error" : "Error Corregido",
-	"Unresolved Error" : "Error sin corregir",
-	"Description" : "Descripción",
-	"Comment" : "Comentario",
-	"Has been fixed." : "Este error ya ha sido corregido. De todas formas, puede que tarde un par de días antes de que la imagen del mapa se actualice.",
-	"Comment/Close" : "Comentario/Cerrado",
-	"Nickname" : "Nombre usuario",
-	"Add comment" : "Añadir comentario",
-	"Mark as fixed" : "Marcar como corregido",
-	"Cancel" : "Cancelar",
-	"Create OpenStreetBug" : "Crear OpenStreetBug",
-	"Create bug" : "Crear bug",
-	"Bug description" : "Descripcion del bug",
-	"Create" : "Crear",
-	"Permalink" : "Permalink",
-	"Zoom" : "Zoom"
-});
