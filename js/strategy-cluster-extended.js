@@ -7,9 +7,14 @@
  */
 OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Cluster, {
     /**
-     * the attribute to use for comparison
+     * the attributes to use for comparison
      */
     attributes: [],
+
+    /**
+     * maximum zoom layer for clustering
+     */
+    maxZoom: 20,
 
     /**
      * APIMethod: activate
@@ -123,6 +128,9 @@ OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Clu
         var cc_attributes = cluster.cluster[0].attributes;
         var fc_attributes = feature.attributes;
         var attr;
+
+        if (this.layer.map.getZoom() > this.maxZoom)
+            return false;
 
         var equalFlag = true;
         for (var i = 0; i < this.attributes.length; i++) {
