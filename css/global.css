@@ -97,7 +97,7 @@ body {
 }
 
 #map {
-    height: 512px;
+    height: 800px;
     overflow: hidden;
     font-size: 1px;
 }
