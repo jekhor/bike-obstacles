@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="513.38867"
+   height="450.6532"
+   id="svg3106"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="Новы дакумэнт 4">
+  <defs
+     id="defs3108" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="314.55147"
+     inkscape:cy="233.89803"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="mm"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="601"
+     inkscape:window-height="444"
+     inkscape:window-x="0"
+     inkscape:window-y="562"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3111">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Пласт 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-60.44853,-315.60701)">
+    <g
+       transform="translate(1881.5392,-952.26349)"
+       id="g4320"
+       inkscape:export-filename="/var/www/osb/images/dog32.png"
+       inkscape:export-xdpi="6.311008"
+       inkscape:export-ydpi="6.311008">
+      <g
+         transform="translate(-925,5)"
+         inkscape:export-ydpi="4.3826447"
+         inkscape:export-xdpi="4.3826447"
+         inkscape:export-filename="/var/www/osb/images/stairs.png"
+         id="g8421-5">
+        <path
+           inkscape:connector-curvature="0"
+           d="m -869.79385,1713.5195 c -19.08128,-1.5622 -32.07382,-23.7384 -23.71302,-41.0839 34.58154,-60.0383 192.41747,-331.192 230.33577,-397.697 10.89353,-15.7438 36.59494,-15.9076 47.43618,0.01 34.704,59.9677 191.86985,330.8881 230.50575,396.9788 8.18776,17.3059 -4.52111,39.6459 -23.72316,41.078 -69.28554,0.071 -384.28731,0.3039 -460.84152,0.7183 z"
+           id="path590-0-9"
+           sodipodi:nodetypes="ccccccc"
+           style="font-size:12px;fill:#ff0000;fill-rule:evenodd;stroke-width:3pt" />
+        <path
+           inkscape:connector-curvature="0"
+           d="m -841.53373,1668.8005 402.21934,-1.1653 -200.87825,-346.9004 -201.34109,348.0657 z"
+           id="path605-2-5"
+           sodipodi:nodetypes="cccc"
+           style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke-width:3pt" />
+      </g>
+      <path
+         inkscape:connector-curvature="0"
+         style="fill:#000000;fill-rule:evenodd;stroke:none"
+         d="m -1660.2262,1555.9256 c 27.7357,-31.1759 52.5355,-71.1597 84.0776,-90.9165 2.4848,-19.5594 12.0489,-32.8261 24.1372,-43.8491 l 3.2182,43.8491 c 3.9858,-10.6583 11.4363,-18.8418 22.9303,-24.1371 l -1.2068,39.424 c 8.5278,6.3995 22.4217,16.4303 28.0211,29.8319 5.7163,13.6814 23.9337,16.5342 35.9422,26.0858 -34.5634,52.3871 -57.9294,17.435 -86.8936,26.1485 -1.0728,28.5623 -3.8817,46.7074 -3.2183,85.6868 -24.8608,2.6575 -57.55,-18.8508 -107.0079,-92.1234 z"
+         id="path3242"
+         sodipodi:nodetypes="ccccccscccc" />
+    </g>
+  </g>
+</svg>

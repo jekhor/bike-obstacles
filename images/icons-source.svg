@@ -197,7 +197,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.25"
-     inkscape:cx="-1873.5252"
+     inkscape:cx="-2709.5252"
      inkscape:cy="-1034.2837"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -232,38 +232,24 @@
      inkscape:label="Пласт 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <g
-       id="g8810"
-       transform="translate(-2080,660)">
-      <path
-         inkscape:export-ydpi="24.75"
-         inkscape:export-xdpi="24.75"
-         inkscape:export-filename="/tmp/icon-border1.png"
-         sodipodi:open="true"
-         sodipodi:end="7.8539816"
-         sodipodi:start="1.5758217"
-         d="m 534.79899,357.36168 c -22.09112,-0.11102 -39.9095,-18.1094 -39.79848,-40.20051 0.11101,-22.09111 18.10939,-39.9095 40.2005,-39.79848 22.09112,0.11101 39.9095,18.1094 39.79848,40.20051 -0.11062,22.01265 -17.98656,39.79898 -39.99949,39.79898"
-         sodipodi:ry="40"
-         sodipodi:rx="40"
-         sodipodi:cy="317.36218"
-         sodipodi:cx="535"
-         id="path3856-0"
-         style="color:#000000;fill:none;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         sodipodi:type="arc"
-         transform="translate(145,-5)" />
-      <path
-         sodipodi:nodetypes="cc"
-         inkscape:connector-curvature="0"
-         id="path3904"
-         d="m 655,337.36218 50,-50"
-         style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-      <path
-         style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:8;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         d="m 655,287.36218 50,50"
-         id="path3906"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="cc" />
-    </g>
+    <path
+       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:83.19999695;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m -2640,2732.3622 520,-520"
+       id="path3904"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/var/www/osb/images/kerb16.png"
+       inkscape:export-xdpi="2.4878523"
+       inkscape:export-ydpi="2.4878523" />
+    <path
+       sodipodi:nodetypes="cc"
+       inkscape:connector-curvature="0"
+       id="path3906"
+       d="m -2640,2212.3622 520,520"
+       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:83.19999695;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       inkscape:export-filename="/var/www/osb/images/kerb16.png"
+       inkscape:export-xdpi="2.4878523"
+       inkscape:export-ydpi="2.4878523" />
     <g
        id="g1013"
        transform="translate(-985.5313,-8.0752674)"
@@ -466,5 +452,15 @@
          d="m -1670,2177.3622 c 30,10 15,-40 55,-40 40,0 25,45 60,40 35,5 15,-40 60,-40 40,0 20,45 60,40"
          style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
+    <rect
+       style="color:#000000;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect3163"
+       width="640"
+       height="640"
+       x="-2720"
+       y="1212.3622"
+       inkscape:export-filename="/var/www/osb/images/square9.png"
+       inkscape:export-xdpi="1.265625"
+       inkscape:export-ydpi="1.265625" />
   </g>
 </svg>
