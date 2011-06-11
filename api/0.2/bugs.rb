@@ -49,7 +49,7 @@ class Bugs < Sinatra::Base
       'properties' => {
         'subtype' => row['subtype'],
         'type' => row['type'],
-        'comments' => row['text'].split(/<hr \/>/).map {|comment| comment.gsub('&quot;', "\"").gsub('&lt;', "<").gsub('&gt;', ">").gsub('&amp;', "&")},
+        'comments' => row['text'].force_encoding("utf-8").split(/<hr \/>/).map {|comment| comment.gsub('&quot;', "\"").gsub('&lt;', "<").gsub('&gt;', ">").gsub('&amp;', "&")},
       }
       }
       ja << f
