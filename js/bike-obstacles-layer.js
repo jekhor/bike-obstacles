@@ -103,7 +103,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
         var clusterStrategy = new OpenLayers.Strategy.AttributesCluster({
             attributes: ['subtype', 'type'],
             threshold: 2,
-            distance: 8,
+            distance: 16,
             maxZoom: 16
         });
 
