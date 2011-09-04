@@ -104,7 +104,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
             attributes: ['subtype', 'type'],
             threshold: 2,
             distance: 16,
-            maxZoom: 16
+            maxZoom: 15
         });
 
         OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({
