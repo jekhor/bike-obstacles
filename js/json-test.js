@@ -35,39 +35,60 @@ function init() {
                 return 0.2;
             else
                 return 1;
-        }
+        },
+        isClustered: function(feature) {
+	        if (feature.cluster)
+                return true;
+            else
+                return false;
+	},
+	styleKey: function(feature) {
+		return "type_" + feature.type +
+			".subtype_" + feature.subtype +
+			".cluster_" + (feature.cluster == true);
+	}
     };
 
     style = new OpenLayers.StyleMap({
-        'default': new OpenLayers.Style({
-            'pointRadius' : 10,
-            'graphicOpacity': "${getOpacity}"
-        }, {
-            'context': context
-        }),
-        'select': new OpenLayers.Style({
-            'pointRadius' : 20,
-            'graphicOpacity': "${getOpacity}"
-        }, {
-            'context': context
-        }),
-        'temporary': new OpenLayers.Style({
-            'pointRadius' : 20,
-            'graphicOpacity': "${getOpacity}"
-        }, {
-            'context': context
-        })
+        'default': new OpenLayers.Style(),
+        'select': new OpenLayers.Style(),
+        'temporary': new OpenLayers.Style()
     });
 
-    var style_lookup = {
-        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 6},
-        'parked cars': {'externalGraphic': '/images/carparking32.png'},
-        'pedestrians': {'externalGraphic': '/images/old_folks32.png'},
-        'stairs': {'externalGraphic': '/images/stairs32.png'},
-        'dogs': {'externalGraphic': '/images/dog32.png'},
-        'rough road': {'externalGraphic': '/images/rough-road32.png'},
-        'other': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8},
+    var normal_style_lookup = {
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb12.png', 'pointRadius': 6, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerbs14.png', 'pointRadius': 7, 'graphicOpacity': 1},
+	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
+	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_pedestrians.cluster_true': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
+	'type_0.subtype_stairs.cluster_false': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_stairs.cluster_true': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
+	'type_0.subtype_dogs.cluster_false': {'externalGraphic': '/images/dog32.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_dogs.cluster_true': {'externalGraphic': '/images/dog32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
+	'type_0.subtype_rough road.cluster_false': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_rough road.cluster_true': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
+	'type_0.subtype_other.cluster_false': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 1},
+	'type_0.subtype_other.cluster_true': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 0.6}
     };
+
+    var highlight_style_lookup = {
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb24.png', 'pointRadius': 12, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerbs24.png', 'pointRadius': 12, 'graphicOpacity': 1},
+	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 1},
+	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
+	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 20, 'graphicOpacity': 1},
+	'type_0.subtype_pedestrians.cluster_true': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
+	'type_0.subtype_stairs.cluster_false': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 20, 'graphicOpacity': 1},
+	'type_0.subtype_stairs.cluster_true': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
+	'type_0.subtype_dogs.cluster_false': {'externalGraphic': '/images/dog32.png', 'pointRadius': 20, 'graphicOpacity': 1},
+	'type_0.subtype_dogs.cluster_true': {'externalGraphic': '/images/dog32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
+	'type_0.subtype_rough road.cluster_false': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 20, 'graphicOpacity': 1},
+	'type_0.subtype_rough road.cluster_true': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
+	'type_0.subtype_other.cluster_false': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 1},
+	'type_0.subtype_other.cluster_true': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 0.6}
+    };
+
 
     var style_lookup_closed = {
         1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 8},
@@ -77,21 +98,18 @@ function init() {
         1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 15},
     };
 
-    var style_lookup_highlight = {
-        'kerb' : {'externalGraphic': '/images/kerb16.png', 'pointRadius': 12},
-        'parked cars': {'externalGraphic': '/images/carparking32.png'},
-        'pedestrians': {'externalGraphic': '/images/old_folks32.png'},
-        'stairs': {'externalGraphic': '/images/stairs32.png'},
-        'dogs': {'externalGraphic': '/images/dog32.png'},
-        'rough road': {'externalGraphic': '/images/rough-road32.png'},
-        'other': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 15},
+    var ruleContext = function(feature) {
+	    return {styleKey: "type_" + feature.attributes['type'] +
+		    ".subtype_" + feature.attributes['subtype'] +
+		    ".cluster_" + (feature.cluster != null)};
     };
 
-    style.addUniqueValueRules("default", "subtype", style_lookup);
     style.addUniqueValueRules("default", "type", style_lookup_closed);
-    style.addUniqueValueRules("temporary", "subtype", style_lookup_highlight);
+    style.addUniqueValueRules("default", "styleKey", normal_style_lookup, ruleContext);
+//    style.addUniqueValueRules("default", "subtype", style_lookup);
+    style.addUniqueValueRules("temporary", "styleKey", highlight_style_lookup, ruleContext);
     style.addUniqueValueRules("temporary", "type", style_lookup_closed_highlight);
-    style.addUniqueValueRules("select", "subtype", style_lookup_highlight);
+    style.addUniqueValueRules("select", "styleKey", highlight_style_lookup, ruleContext);
     style.addUniqueValueRules("select", "type", style_lookup_closed_highlight);
 
 
