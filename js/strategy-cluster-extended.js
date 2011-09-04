@@ -54,6 +54,15 @@ OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Clu
         return deactivated;
     },
 
+    findFeature: function(array, fid) {
+        
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].fid == fid)
+                return i;
+        }
+
+        return -1;
+    },
      /**
      * Method: cacheFeatures
      * Cache features before they are added to the layer.
@@ -79,7 +88,9 @@ OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Clu
                     if (feature.state === OpenLayers.State.INSERT)
                         new_features.push(feature);
                     else {
-                        this.features.push(feature);
+                        if (this.findFeature(this.features, feature.fid) == -1)
+                            this.features.push(feature);
+                        
                         clustering_needed = true;
                     }
                 }
