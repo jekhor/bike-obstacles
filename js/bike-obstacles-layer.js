@@ -374,7 +374,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2 = document.createElement("li");
 			el3 = document.createElement("input");
 			el3.setAttribute("type", "image");
-			el3.setAttribute("src", "/images/icons/comment24.png");
+			el3.setAttribute("src", "/images/icons/comment16.png");
 			el3.setAttribute('alt', OpenLayers.i18n("Add comment"));
 			el3.setAttribute('title', OpenLayers.i18n("Add comment"));
 			el3.value = OpenLayers.i18n("Add comment");
@@ -384,7 +384,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2 = document.createElement("li");
 			el3 = document.createElement("input");
 			el3.setAttribute("type", "image");
-			el3.setAttribute("src", "/images/icons/close_bug24.png");
+			el3.setAttribute("src", "/images/icons/close_bug16.png");
 			el3.setAttribute("alt", OpenLayers.i18n("Mark as fixed"));
 			el3.setAttribute("title", OpenLayers.i18n("Mark as fixed"));
 			el3.onclick = function(){ if (!inputComment.value.match(/^\s*$/)) { layer.closeBug(feature, inputComment.value); layer.hidePopup(feature); return false; } else {inputComment.style.background = 'Yellow'; inputComment.select()}};
@@ -397,7 +397,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 			el2 = document.createElement("li");
 			el3 = document.createElement("input");
 			el3.setAttribute("type", "image");
-			el3.setAttribute("src", "/images/icons/delete_bug24.png");
+			el3.setAttribute("src", "/images/icons/delete_bug16.png");
 			el3.setAttribute("alt", OpenLayers.i18n("Delete"));
 			el3.setAttribute("title", OpenLayers.i18n("Delete"));
 			el3.onclick = function(){ if (!inputComment.value.match(/^\s*$/)) { layer.deleteBug(feature, inputComment.value); layer.hidePopup(feature); return false; } else {inputComment.style.background = 'Yellow'; inputComment.select()}};
