@@ -42,10 +42,9 @@ function init() {
             else
                 return false;
 	},
-	styleKey: function(feature) {
-		return "type_" + feature.type +
-			".subtype_" + feature.subtype +
-			".cluster_" + (feature.cluster == true);
+	clusterRadius: function(feature)
+	{
+		return (feature.cluster != null) ? feature.attributes.count + 4 : 4;
 	}
     };
 
@@ -56,25 +55,25 @@ function init() {
     });
 
     var normal_style_lookup = {
-	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb_orange12.png', 'pointRadius': 6, 'graphicOpacity': 1},
-	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerb12.png', 'pointRadius': 7, 'graphicOpacity': 1},
-	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 1},
-	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
-	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 1},
-	'type_0.subtype_pedestrians.cluster_true': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
-	'type_0.subtype_stairs.cluster_false': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 10, 'graphicOpacity': 1},
-	'type_0.subtype_stairs.cluster_true': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
-	'type_0.subtype_dogs.cluster_false': {'externalGraphic': '/images/dog32.png', 'pointRadius': 10, 'graphicOpacity': 1},
-	'type_0.subtype_dogs.cluster_true': {'externalGraphic': '/images/dog32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
-	'type_0.subtype_rough road.cluster_false': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 10, 'graphicOpacity': 1},
-	'type_0.subtype_rough road.cluster_true': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
-	'type_0.subtype_other.cluster_false': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 1},
-	'type_0.subtype_other.cluster_true': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 0.6}
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/dot10.png', 'pointRadius': 5, 'graphicOpacity': 0.8},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/dot14.png',  'pointRadius': 7, 'graphicOpacity': 0.6},
+	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 0.8},
+	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 13, 'graphicOpacity': 0.6},
+	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 0.8},
+	'type_0.subtype_pedestrians.cluster_true': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 13, 'graphicOpacity': 0.6},
+	'type_0.subtype_stairs.cluster_false': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 10, 'graphicOpacity': 0.8},
+	'type_0.subtype_stairs.cluster_true': {'externalGraphic': '/images/stairs32.png', 'pointRadius': 13, 'graphicOpacity': 0.6},
+	'type_0.subtype_dogs.cluster_false': {'externalGraphic': '/images/dog32.png', 'pointRadius': 10, 'graphicOpacity': 0.8},
+	'type_0.subtype_dogs.cluster_true': {'externalGraphic': '/images/dog32.png', 'pointRadius': 13, 'graphicOpacity': 0.6},
+	'type_0.subtype_rough road.cluster_false': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 10, 'graphicOpacity': 0.8},
+	'type_0.subtype_rough road.cluster_true': {'externalGraphic': '/images/rough-road32.png', 'pointRadius': 13, 'graphicOpacity': 0.6},
+	'type_0.subtype_other.cluster_false': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 0.8},
+	'type_0.subtype_other.cluster_true': {'externalGraphic': '/images/open_bug_marker.png', 'pointRadius': 10, 'graphicOpacity': 0.6}
     };
 
     var highlight_style_lookup = {
-	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb_orange24.png', 'pointRadius': 12, 'graphicOpacity': 1},
-	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerb24.png', 'pointRadius': 12, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/dot20.png', 'pointRadius': 10, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/dot28.png', 'pointRadius': 14, 'graphicOpacity': 0.6},
 	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 1},
 	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
 	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 20, 'graphicOpacity': 1},
@@ -91,24 +90,25 @@ function init() {
 
 
     var style_lookup_closed = {
-        1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 8},
+        1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 8, 'graphicOpacity': 0.8},
     };
 
     var style_lookup_closed_highlight = {
-        1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 15},
+	    1 : {'externalGraphic': '/images/closed_bug_marker.png', 'pointRadius': 16, 'graphicOpacity': 0.8},
     };
 
     var ruleContext = function(feature) {
-	    return {styleKey: "type_" + feature.attributes['type'] +
+	    return {
+		    styleKey: "type_" + feature.attributes['type'] +
 		    ".subtype_" + feature.attributes['subtype'] +
-		    ".cluster_" + (feature.cluster != null)};
+		    ".cluster_" + (feature.cluster != null)
+	    };
     };
 
     style.addUniqueValueRules("default", "type", style_lookup_closed);
     style.addUniqueValueRules("default", "styleKey", normal_style_lookup, ruleContext);
-//    style.addUniqueValueRules("default", "subtype", style_lookup);
-    style.addUniqueValueRules("temporary", "styleKey", highlight_style_lookup, ruleContext);
     style.addUniqueValueRules("temporary", "type", style_lookup_closed_highlight);
+    style.addUniqueValueRules("temporary", "styleKey", highlight_style_lookup, ruleContext);
     style.addUniqueValueRules("select", "styleKey", highlight_style_lookup, ruleContext);
     style.addUniqueValueRules("select", "type", style_lookup_closed_highlight);
 
