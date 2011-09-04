@@ -110,6 +110,7 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
         OpenLayers.Layer.Vector.prototype.initialize.apply(this, [ name, OpenLayers.Util.extend({
             projection: new OpenLayers.Projection("EPSG:4326"),
             strategies: [new OpenLayers.Strategy.BBOX(), clusterStrategy, saveStrategy],
+//            strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],
             protocol: new OpenLayers.Protocol.HTTP({
                 url: this.apiURL + "/bugs.rb",
                 format: new OpenLayers.Format.GeoJSON()

@@ -56,8 +56,8 @@ function init() {
     });
 
     var normal_style_lookup = {
-	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb12.png', 'pointRadius': 6, 'graphicOpacity': 1},
-	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerbs14.png', 'pointRadius': 7, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb_orange12.png', 'pointRadius': 6, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerb12.png', 'pointRadius': 7, 'graphicOpacity': 1},
 	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 1},
 	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 10, 'graphicOpacity': 0.6},
 	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 10, 'graphicOpacity': 1},
@@ -73,8 +73,8 @@ function init() {
     };
 
     var highlight_style_lookup = {
-	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb24.png', 'pointRadius': 12, 'graphicOpacity': 1},
-	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerbs24.png', 'pointRadius': 12, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_false': {'externalGraphic': '/images/icons/kerb_orange24.png', 'pointRadius': 12, 'graphicOpacity': 1},
+	'type_0.subtype_kerb.cluster_true': {'externalGraphic': '/images/icons/kerb24.png', 'pointRadius': 12, 'graphicOpacity': 1},
 	'type_0.subtype_parked cars.cluster_false': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 1},
 	'type_0.subtype_parked cars.cluster_true': {'externalGraphic': '/images/carparking32.png', 'pointRadius': 20, 'graphicOpacity': 0.6},
 	'type_0.subtype_pedestrians.cluster_false': {'externalGraphic': '/images/old_folks32.png', 'pointRadius': 20, 'graphicOpacity': 1},

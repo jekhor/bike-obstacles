@@ -121,6 +121,7 @@ function osbug_makeform() {
         };
 
         popup.updateSize();
+	inputDescription.focus();
 }
 
 function onPopupClose(evt) {

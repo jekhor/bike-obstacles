@@ -255,7 +255,8 @@ OpenLayers.Layer.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Layer.Markers,
 			+ "?t="+this.round(bounds.top, 5)
 			+ "&r="+this.round(bounds.right, 5)
 			+ "&b="+this.round(bounds.bottom, 5)
-			+ "&l="+this.round(bounds.left, 5));
+			+ "&l="+this.round(bounds.left, 5)
+			+ "&z="+this.map.zoom);
 	},
 
 	/**
