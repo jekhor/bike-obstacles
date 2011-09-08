@@ -88,16 +88,19 @@ OpenLayers.Strategy.AttributesCluster = OpenLayers.Class(OpenLayers.Strategy.Clu
                     if (feature.state === OpenLayers.State.INSERT)
                         new_features.push(feature);
                     else {
-                        if (this.findFeature(this.features, feature.fid) == -1)
+                        var pos = this.findFeature(this.features, feature.fid);
+                        if (pos == -1)
                             this.features.push(feature);
-                        
+                        else
+                            this.features[pos] = feature;
+
                         clustering_needed = true;
                     }
                 }
 
                 if (clustering_needed)
                     this.cluster();
-  
+
                 event.features = new_features;
                 this.features = this.features.concat(new_features);
             } else {
