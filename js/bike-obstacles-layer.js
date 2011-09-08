@@ -268,9 +268,10 @@ OpenLayers.Layer.BikeObstacles = new OpenLayers.Class(OpenLayers.Layer.Vector, {
 
 		if(this.permalinkURL)
 		{
+            var ll = feature.lonlat.clone().transform(this.map.getProjectionObject(), this.map.displayProjection);
 			el1.appendChild(document.createTextNode(" ["));
 			el2 = document.createElement("a");
-			el2.href = this.permalinkURL + (this.permalinkURL.indexOf("?") == -1 ? "?" : "&") + "lon="+feature.lonlat.lon+"&lat="+feature.lonlat.lat+"&zoom=15";
+			el2.href = this.permalinkURL + (this.permalinkURL.indexOf("?") == -1 ? "?" : "&") + "lon="+ll.lon+"&lat="+ll.lat+"&zoom=15";
 			el2.appendChild(document.createTextNode(OpenLayers.i18n("Permalink")));
 			el1.appendChild(el2);
 			el1.appendChild(document.createTextNode("]"));
@@ -766,6 +767,7 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
     click: function(e) {
         if(!this.map) return true;
 
+
         if (this.newBugPopup != null) {
             this.map.removePopup(this.newBugPopup);
             this.newBugPopup.destroy;
@@ -779,6 +781,11 @@ OpenLayers.Control.OpenStreetBugs = new OpenLayers.Class(OpenLayers.Control, {
         var lonlat = this.map.getLonLatFromViewPortPx(e.xy);
         var lonlatApi = lonlat.clone().transform(this.map.getProjectionObject(), this.osbLayer.projection);
         var popup = new OpenLayers.Popup.FramedCloud.OpenStreetBugs("create_popup", lonlat, null, null, null, true);
+
+        if (this.map.zoom < 17) {
+            this.map.setCenter(lonlat, 17);
+            return;
+        }
 
         popup.panMapIfOutOfView = false;
         this.newBugPopup = popup;
@@ -946,6 +953,7 @@ OpenLayers.Lang.ru = OpenLayers.Util.extend(OpenLayers.Lang.ru, {
     "Rough road" : "Дефекты покрытия",
     "Mark as fixed" : "Пометить как исправленное",
     "Remove" : "Удалить",
+    "Reopen" : "Не исправлено",
     "Add comment" : "Добавить комментарий",
     "Cancel" : "Отмена",
     "New obstacles can be added on zoom level 17 or greater": "Добавлять сведения можно только на максимальном уровне детализации"
@@ -983,6 +991,7 @@ OpenLayers.Lang.be = OpenLayers.Util.extend(OpenLayers.Lang.be, {
     "Rough road" : "Дэфекты пакрыцця",
     "Mark as fixed" : "Пазначыць як выпраўленае",
     "Remove" : "Выдаліць",
+    "Reopen" : "Не выпраўленае",
     "Add comment" : "Дадаць каментар",
     "Cancel" : "Скасаваць",
     "New obstacles can be added on zoom level 17 or greater": "Дадаваць звесткі можна толькі на максімальным узроўні дэталізацыі"
