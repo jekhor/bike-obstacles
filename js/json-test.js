@@ -25,6 +25,12 @@ function init() {
     map = new OpenLayers.Map('map', options);
     belmapnik = new OpenLayers.Layer.OSM("LatLon Belarusian", "http://tile.latlon.org/tiles/${z}/${x}/${y}.png");
     var mapnik = new OpenLayers.Layer.OSM();
+    var yasat = new OpenLayers.Layer.XYZ("Яндекс.Карты", "http://wms.latlon.org/?request=GetTile&layers=yasat&x=${x}&y=${y}&z=${z}", {
+	 	numZoomLevels: 19,
+		isBaseLayer: true,
+		type: 'png',
+		attribution: "Yandex maps (maps.yandex.ru)"
+	});
 
     var context = {
         getOpacity: function(feature) {
@@ -119,7 +125,7 @@ function init() {
         styleMap: style
         });
     
-    map.addLayers([belmapnik, mapnik, bikeObstacles]);
+    map.addLayers([belmapnik, mapnik, yasat, bikeObstacles]);
 
     var highlightCtrl = new OpenLayers.Control.SelectFeature(bikeObstacles, {
         hover: true,
